@@ -1,0 +1,20 @@
+|                                            FRONTEND
+Główna:
+    - wybór jezyka
+Logowanie/Rejestracja:
+    - na 1 podstronie
+    - 
+Historia:
+    - wykres
+    - historia (możliwość sprawdzania pytań z sesji) 
+Quizowa:
+    - na głównej
+    - 10x1
+    - poprawne odpowiedzi (%)
+
+|                                           BACKEND
+Pocketbase:
+    - kolekcje: users , questions , sessions , answers , categories
+        ♦ users: nazwa, hasło, zdj(profilowe),
+        ♦ questions: treść, odpowiedzi, wybrana, poprawna(bool), sesja
+        ♦ sessions: relacja(users), relacja(questions)
