@@ -1,20 +1,57 @@
-|                                            FRONTEND
+|                                                  FRONTEND
 Główna:
-    - wybór jezyka
+    nie zalogowany:
+        - widzi rodzaje quizów <-- widzi, nie działa
+        - dostęp tylko do głównej i logowania
+    widoczne dopiero po zalogowaniu:
+        - ^wykres ile jakiej kategorii było testów(słupkowy)^
+        - ^wykres średnia poprawność ( kołowy, % )^
+        - wybór jezyka
+        - historia ~5 ostatnich testów
+
+Quizowa:
+    - przenosi po wybraniu języka(inaczej przekierowuje na główną)
+    - 10x1
+    - poprawne odpowiedzi( % lub x/10 )
+    - po 4 odpowiedzi
+    - po wybraniu pokazuje która poprawna
+    - około 1,5s przerwy między LUB możliwość skakania z podsumowaniem na koniec
+
 Logowanie/Rejestracja:
     - na 1 podstronie
-    - 
-Historia:
-    - wykres
-    - historia (możliwość sprawdzania pytań z sesji) 
-Quizowa:
-    - na głównej
-    - 10x1
-    - poprawne odpowiedzi (%)
+    - automatyczne przekierowanie na główną(po logowaniu, nie rejestracji)
 
-|                                           BACKEND
+Historia:
+    - wykres(z możliwością zmiany) <--kołowy/zwykły/słupkowy
+    - historia:
+        card: numerSesji, ilePoprawnych(0/10), kategoria, ^wykresIndywidualny^
+        kliknięcie: wszystkie pytania, odpowiedzi do pytań, wybrana odp z oznaczeniem czy poprawne
+
+Wyszukiwarka:
+    - możliwość wyszukania osoby po nazwie
+    - widać ile jakich testów i/lub średnią skuteczność
+    - nie widać szczegółów sesji ale skróconą historię
+
+
+|                                                  BACKEND
 Pocketbase:
-    - kolekcje: users , questions , sessions , answers , categories
-        ♦ users: nazwa, hasło, zdj(profilowe),
-        ♦ questions: treść, odpowiedzi, wybrana, poprawna(bool), sesja
-        ♦ sessions: relacja(users), relacja(questions)
+    kolekcje: 
+        ♦ users: nazwa(min 3), hasło(min 8), zdj(profilowe), relacja(sessions);
+        ○ questions: treść, 4odpowiedzi, relacja(numerSesji), relacja(answers);
+        ♦ sessions: numerSesji(3nazwy + 3=<liczby), relacja(users), relacja(categories);
+        ○ answers: relacja(numerSesji), relacja(questions), odpowiedzi, poprawne?(bool)
+        ♦ categories: nazwa, ^krótkiOpis^
+
+n8n:
+    - generuje pytania i odpowiedzi na podstawie wybranej kategorii
+    - zapisuje w bazie danych
+
+
+|                                                  DODATKI
+Notion:
+    - integracja z ollama
+    - działa jak nie ma internetu
+
+Generowanie PDF wybranej/wybranych sesji
+
+Filtrowanie wyników w historii(data, kategoria[checkbox], po Wyniku[rosnąco/malejąco]) <-- domyślnie datą
