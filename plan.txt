@@ -36,7 +36,7 @@ Wyszukiwarka:
 |                                                  BACKEND
 Pocketbase:
     kolekcje: 
-        ♦ users: nazwa(min 3), hasło(min 8), zdj(profilowe), relacja(sessions);
+        ♦ users: nazwa(min 3), hasło(min 8), zdj(profilowe);
         ○ questions: treść, 4odpowiedzi, relacja(numerSesji), relacja(answers);
         ♦ sessions: numerSesji(3nazwy + 3=<liczby), relacja(users), relacja(categories);
         ○ answers: relacja(numerSesji), relacja(questions), odpowiedzi, poprawne?(bool)

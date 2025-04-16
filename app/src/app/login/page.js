@@ -2,6 +2,8 @@ import NavBar from "@/components/navBar";
 
 export default function Home() {
   return (
-    <NavBar></NavBar>
+    <div>
+        <NavBar></NavBar>
+    </div>
   );
 }
