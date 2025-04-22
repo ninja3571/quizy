@@ -1,7 +1,10 @@
-import NavBar from "@/components/navBar";
+import Sidebarr from "@/components/sideBar";
 
 export default function Home() {
   return (
-    <NavBar></NavBar>
+    <div>
+      <Sidebarr />
+    </div>
+
   );
 }
