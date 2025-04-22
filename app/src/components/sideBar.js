@@ -1,4 +1,5 @@
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/sidebar_acern";
+import { Clock2, House } from "lucide-react";
 
 export default function Sidebarr() {
     return (
@@ -6,34 +7,23 @@ export default function Sidebarr() {
             <SidebarBody>
                 <SidebarLink
                     link={{
-                        label: "history",
-                        href: "/history",
+                        label: "Main",
+                        href: "/",
                         icon: (
-                            <img
-                                src="https://assets.aceternity.com/manu.png"
-                                className="h-7 w-7 shrink-0 rounded-full"
-                                width={50}
-                                height={50}
-                                alt="Avatar"
-                            />
+                            <House />
                         )
                     }}
                 />
                 <SidebarLink
                     link={{
-                        label: "Main",
-                        href: "/",
+                        label: "History",
+                        href: "/history",
                         icon: (
-                            <img
-                                src="https://assets.aceternity.com/manu.png"
-                                className="h-7 w-7 shrink-0 rounded-full"
-                                width={50}
-                                height={50}
-                                alt="Avatar"
-                            />
+                            <Clock2 />
                         )
                     }}
                 />
+
             </SidebarBody>
         </Sidebar>
     );
