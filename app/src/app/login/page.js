@@ -1,5 +1,6 @@
-import { FlickeringGrid } from "@/components/magicui/flickering-grid";
+'use client'
 
+import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -18,7 +19,32 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 
+import { useState } from "react";
+import PocketBase from 'pocketbase';
+
 export default function Home() {
+
+  const pb = new PocketBase('http://172.16.15.146:8080');
+
+  const [pass, setPass] = useState(null)
+  const [pass2, setPass2] = useState(null)
+  const [name, setName] = useState(null)
+  const [email, setEmail] = useState(null)
+
+  const signIn = async()=>{
+
+    const data = {
+      "username": name,
+      "email": email,
+      "emailVisibility": true,
+      "password": pass,
+      "passwordConfirm": pass2,
+  };
+  
+  const record = await pb.collection('users').create(data);
+    console.log(name, email, pass, pass2)
+  }
+
   return (
     // tło - modyfikacje
     <div className="overflow-hidden">
@@ -31,7 +57,7 @@ export default function Home() {
       />
 
       {/* div logowania */}
-      <Tabs defaultValue="account" className="w-[400px] absolute top-[50%] translate-y-[-50%] left-[50%] translate-x-[-50%]">
+      <Tabs defaultValue="account" className="w-[400px] absolute bottom-[30%] left-[50%] translate-x-[-50%]">
         <TabsContent value="account">
           <Card className="bg-[rgba(168,171,201,0.2)] backdrop-blur-[2px] border-2 border-black">
             <CardHeader>
@@ -40,11 +66,15 @@ export default function Home() {
             <CardContent className="space-y-2">
               <div className="space-y-1">
                 <Label htmlFor="1username">Username</Label>
-                <Input id="1username" placeholder="username" className="placeholder:text-emerald-900 border-black" />
+                <Input id="1username" placeholder="username" className="placeholder:text-emerald-900 border-black" onChange={(e)=>{setName(e.target.value)}}/>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="1pass">Email</Label>
+                <Input id="email" placeholder="email" className="placeholder:text-emerald-900 border-black" onChange={(e)=>{setEmail(e.target.value)}}/>
               </div>
               <div className="space-y-1">
                 <Label htmlFor="1pass">Password</Label>
-                <Input id="1pass" placeholder="password" className="placeholder:text-emerald-900 border-black" />
+                <Input id="1pass" placeholder="password" className="placeholder:text-emerald-900 border-black" onChange={(e)=>{setPass(e.target.value)}}/>
               </div>
             </CardContent>
             <CardFooter className="flex justify-center">
@@ -62,19 +92,23 @@ export default function Home() {
             <CardContent className="space-y-2">
               <div className="space-y-1">
                 <Label htmlFor="2username">Username</Label>
-                <Input id="2username" placeholder="username" className="placeholder:text-emerald-900 border-black" />
+                <Input id="2username" placeholder="username" className="placeholder:text-emerald-900 border-black" onChange={(e)=>{setName(e.target.value)}}/>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="1pass">Email</Label>
+                <Input id="email" placeholder="email" className="placeholder:text-emerald-900 border-black" onChange={(e)=>{setEmail(e.target.value)}}/>
               </div>
               <div className="space-y-1">
                 <Label htmlFor="2pass">Password</Label>
-                <Input id="2pass" placeholder="password" className="placeholder:text-emerald-900 border-black" />
+                <Input id="2pass" placeholder="password" className="placeholder:text-emerald-900 border-black" onChange={(e)=>{setPass(e.target.value)}}/>
               </div>
               <div className="space-y-1">
                 <Label htmlFor="2pass2">Repeat Password</Label>
-                <Input id="2pass2" placeholder="password" className="placeholder:text-emerald-900 border-black" />
+                <Input id="2pass2" placeholder="password" className="placeholder:text-emerald-900 border-black" onChange={(e)=>{setPass2(e.target.value)}}/>
               </div>
             </CardContent>
             <CardFooter className="flex justify-center">
-              <Button className="w-[40%]">Sign Up</Button>
+              <Button className="w-[40%]" onClick={signIn}>Sign Up</Button>
             </CardFooter>
           </Card>
         </TabsContent>
