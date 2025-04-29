@@ -1,5 +1,5 @@
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/sidebar_acern";
-import { Clock2, House } from "lucide-react";
+import { Clock2, House, Play } from "lucide-react";
 
 export default function Sidebarr() {
     return (
@@ -20,6 +20,15 @@ export default function Sidebarr() {
                         href: "/history",
                         icon: (
                             <Clock2 />
+                        )
+                    }}
+                />
+                <SidebarLink
+                    link={{
+                        label: "Graj",
+                        href: "/quizowa",
+                        icon: (
+                            <Play />
                         )
                     }}
                 />

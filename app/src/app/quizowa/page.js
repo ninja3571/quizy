@@ -1,21 +1,31 @@
 'use client'
 
 import { useEffect, useState } from "react"
+import PocketBase from 'pocketbase';
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+
+    const pb = new PocketBase('http://172.16.15.146:8080');
+    const router = useRouter()
+
+    if (pb.authStore.model) {
+        console.log(pb.authStore.model)
+    }
+    else { router.push("/login") }
 
     const [pyt, setPyt] = useState(null)
     const [change, setChange] = useState(null)
 
-    useEffect(()=>{
-        const getData = async () =>{
-            try{
+    useEffect(() => {
+        const getData = async () => {
+            try {
                 const data = await fetch("http://172.16.15.146:5678/webhook/quiz")
                 const json = await data.json()
                 console.log(json)
                 setPyt(json)
             }
-            catch(err){
+            catch (err) {
                 console.log(err)
                 setChange(err)
             }
@@ -23,19 +33,19 @@ export default function Home() {
         getData()
     }, [change])
 
-  return (
-    <div>
-        {pyt &&
+    return (
         <div>
-            <h1>{pyt.output.question}</h1>
-            <div className="flex flex-row gap-4 min-h-[100px]">
-                {pyt.output.answers.map((item, idx)=>(
-                    <div key={idx} className={`h-auto w-1/${pyt.output.answers.length} ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`}>{item.text}</div>
-                ))}
-            </div>
-            </div>
-        }
-    </div>
+            {pyt &&
+                <div>
+                    <h1>{pyt.output.question}</h1>
+                    <div className="flex flex-row gap-4 min-h-[100px]">
+                        {pyt.output.answers.map((item, idx) => (
+                            <div key={idx} className={`h-auto w-1/${pyt.output.answers.length} ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`}>{item.text}</div>
+                        ))}
+                    </div>
+                </div>
+            }
+        </div>
 
-  );
+    );
 }
