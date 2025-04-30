@@ -15,7 +15,9 @@ export default function Home() {
     else { router.push("/login") }
 
     const [pyt, setPyt] = useState(null)
-    const [change, setChange] = useState(null)
+    const [nrPyt, setNrPyt] = useState(9)
+    const [temat, setTemat] = useState(null)
+
 
     useEffect(() => {
         const getData = async () => {
@@ -31,7 +33,27 @@ export default function Home() {
             }
         }
         getData()
-    }, [change])
+    }, [nrPyt])
+
+    const next = async()=>{
+        console.log(nrPyt)
+        const data = {
+            "pytanie": pyt.output.question,
+            "odp1": `${pyt.output.answers[0]!=null ? pyt.output.answers[0].text : ""}`,
+            "odp2": `${pyt.output.answers[1]!=null ? pyt.output.answers[1].text : ""}`,
+            "odp3": `${pyt.output.answers[2]!=null ? pyt.output.answers[2].text : ""}`,
+            "odp4": `${pyt.output.answers[3]!=null ? pyt.output.answers[3].text : ""}`,
+            "numerSesji": pyt.output,
+            "nrPytania": nrPyt
+        };
+
+        const record = await pb.collection('questions').create(data);
+        console.log(record)
+        {nrPyt==10 ? router.push("/") : null}
+        setTimeout(() => {
+            setNrPyt(nrPyt+1)
+        }, 2000);
+    }
 
     return (
         <div>
@@ -40,7 +62,7 @@ export default function Home() {
                     <h1>{pyt.output.question}</h1>
                     <div className="flex flex-row gap-4 min-h-[100px]">
                         {pyt.output.answers.map((item, idx) => (
-                            <div key={idx} className={`h-auto w-1/${pyt.output.answers.length} ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`}>{item.text}</div>
+                            <div key={idx} className={`h-auto w-1/${pyt.output.answers.length} ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={next}>{item.text}</div>
                         ))}
                     </div>
                 </div>
