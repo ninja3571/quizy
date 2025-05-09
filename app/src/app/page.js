@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <div>
       <WykresGradLin className="h-1/2 w-full -z-10" />
-      <div className="absolute">
+      <div className="sticky top-0 w-[60px]">
         <Sidebarr />
       </div>
     </div>

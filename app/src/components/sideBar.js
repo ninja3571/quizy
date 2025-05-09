@@ -1,5 +1,5 @@
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/sidebar_acern";
-import { Clock2, House, Play } from "lucide-react";
+import { Clock2, House, LogOut, Play } from "lucide-react";
 
 export default function Sidebarr() {
     return (
@@ -31,6 +31,16 @@ export default function Sidebarr() {
                             <Play />
                         )
                     }}
+                />
+                <SidebarLink
+                    link={{
+                        label: "Wyloguj",
+                        href: "/login",
+                        icon: (
+                            <LogOut/>
+                        ),
+                    }}
+                    className="absolute bottom-5"
                 />
 
             </SidebarBody>

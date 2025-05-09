@@ -3,6 +3,14 @@
 import { useEffect, useState } from "react"
 import PocketBase from 'pocketbase';
 import { useRouter } from "next/navigation";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
 
@@ -15,14 +23,31 @@ export default function Home() {
     else { router.push("/login") }
 
     const [pyt, setPyt] = useState(null)
-    const [nrPyt, setNrPyt] = useState(9)
+    const [nrPyt, setNrPyt] = useState(0)
     const [temat, setTemat] = useState(null)
+    const [categories, setCategories] = useState(null)
+    const [sesja, setSesja] = useState(null)
 
 
     useEffect(() => {
         const getData = async () => {
             try {
-                const data = await fetch("http://172.16.15.146:5678/webhook/quiz")
+                const records = await pb.collection('categories').getFullList();
+                console.log(records)
+                setCategories(records)
+            }
+            catch (err) {
+                console.log(err)
+                setChange(err)
+            }
+        }
+        getData()
+    }, [nrPyt])
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const data = await fetch(`http://172.16.15.146:5678/webhook/quiz`, {headers:{"topic":temat}})
                 const json = await data.json()
                 console.log(json)
                 setPyt(json)
@@ -32,7 +57,9 @@ export default function Home() {
                 setChange(err)
             }
         }
-        getData()
+        setTimeout(() => {
+            getData()
+        }, 200);
     }, [nrPyt])
 
     const next = async()=>{
@@ -43,26 +70,52 @@ export default function Home() {
             "odp2": `${pyt.output.answers[1]!=null ? pyt.output.answers[1].text : ""}`,
             "odp3": `${pyt.output.answers[2]!=null ? pyt.output.answers[2].text : ""}`,
             "odp4": `${pyt.output.answers[3]!=null ? pyt.output.answers[3].text : ""}`,
-            "numerSesji": pyt.output,
+            "numerSesji": sesja,
             "nrPytania": nrPyt
         };
 
         const record = await pb.collection('questions').create(data);
         console.log(record)
-        {nrPyt==10 ? router.push("/") : null}
-        setTimeout(() => {
+        // {nrPyt==10 ? router.push("/") : null}
+        // setTimeout(() => {
             setNrPyt(nrPyt+1)
-        }, 2000);
+        // }, 200);
+    }
+
+    const sesion = async()=>{
+        const data = {
+            "userID": pb.authStore.model.id,
+            "kategoriaID": 'nclpqpxqnctfqh2'
+        };
+        
+        const record = await pb.collection('sesions').create(data);
+        setSesja(record.id)
+        setNrPyt(nrPyt+1)
     }
 
     return (
         <div>
-            {pyt &&
-                <div>
+            {nrPyt==0 &&
+                <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 border-2 border-dashed">
+                <Select onValueChange={(e)=>setTemat(e)}>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Temat quizu" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {categories && categories.map((item, idx)=>(
+                            <SelectItem value={item.nazwa} key={idx}>{item.skrot}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <Button className="w-[100%] mt-2" onClick={sesion}>Test</Button>
+                </div>
+            }
+            {nrPyt>=1 && nrPyt<=10 && pyt &&
+                <div className="absolute left-[50%] translate-x-[-50%] w-1/3 flex flex-col items-center">
                     <h1>{pyt.output.question}</h1>
-                    <div className="flex flex-row gap-4 min-h-[100px]">
+                    <div className="flex flex-col gap-4 min-h-[100px] ">
                         {pyt.output.answers.map((item, idx) => (
-                            <div key={idx} className={`h-auto w-1/${pyt.output.answers.length} ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={next}>{item.text}</div>
+                            <div key={idx} className={`h-auto w-auto ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={next}>{item.text}</div>
                         ))}
                     </div>
                 </div>

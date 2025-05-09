@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className="absolute">
+      <div className="sticky top-0 w-[60px]">
         <Sidebarr />
       </div>
       <ExpandableCardDemo classname="absolute" />

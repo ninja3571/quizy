@@ -17,7 +17,7 @@ export function ExpandableCardDemo() {
     useEffect(()=>{
         const getData = async ()=>{
             try{
-                const records = await pb.collection('questions').getFullList({ expand: 'numerSesji.userID, numerSesji.kategoriaID', filter:`numerSesji.userID='${pb.authStore.model.id}'`});
+                const records = await pb.collection('questions').getFullList({ expand: 'numerSesji.kategoriaID', filter:`numerSesji.userID='${pb.authStore.model.id}'`});
                 console.log(records)
                 setDane(records)           
             }
@@ -60,12 +60,13 @@ export function ExpandableCardDemo() {
                 )}
             </AnimatePresence>
             <AnimatePresence>
+                
                 {dane && active && typeof active === "object" ? (
 
                     // po kliknięciu
-                    <div className="fixed inset-0  grid place-items-center z-[100]">
+                    <div className="fixed inset-0 grid place-items-center z-[100]">
                         <motion.button
-                            key={`button-${active.title}-${id}`}
+                            key={`button-${active.title}-${dane.id}`}
                             layout
                             initial={{
                                 opacity: 0,
@@ -86,7 +87,7 @@ export function ExpandableCardDemo() {
 
                         {/* obraz (duży) */}
                         <motion.div
-                            layoutId={`card-${active.pytanie}-${id}`}
+                            layoutId={`card-${active.pytanie}-${dane.id}`}
                             ref={ref}
                             className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden">
                             <motion.div layoutId={`image-${active.pytanie}-${id}`}>
@@ -122,6 +123,7 @@ export function ExpandableCardDemo() {
                                         {active.pytanie}
                                     </motion.a>
                                 </div>
+
                                 {/* przycisk i pod nim */}
                                 <div className="pt-4 relative px-4">
                                     <motion.div
@@ -141,6 +143,7 @@ export function ExpandableCardDemo() {
                 ) : null}
             </AnimatePresence>
             <ul className="max-w-2xl mx-auto w-full gap-4">
+
                 {dane && dane.map((item, idx) => (
                     <motion.div
                         layoutId={`card-${item.id}-${id}`}
