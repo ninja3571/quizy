@@ -30,6 +30,10 @@ export default function Home() {
 
   const router = useRouter()
 
+  if (pb.authStore.model && pb.authStore.model != null) {
+    router.push("/") 
+  }
+
   const [pass, setPass] = useState(null)
   const [pass2, setPass2] = useState(null)
   const [name, setName] = useState(null)
@@ -58,7 +62,6 @@ export default function Home() {
     if(name!=null && email!=null && pass!=null && pass==pass2){
       console.log(data)
       const record = await pb.collection('users').create(data);
-
     }
 
     else{
@@ -80,6 +83,15 @@ export default function Home() {
           },
         })
       }
+      
+      if(pass!=pass2 && pass!=null && pass2!=null){
+        toast("wpisano inne hasła",{
+          action: {
+            label: "X",
+            onClick: () => console.log("X"),
+          },
+        })
+      }
 
       if((pass==null || pass=="") || (pass2==null || pass2=="")){
         toast("nie wpisano hasła",{
@@ -89,6 +101,7 @@ export default function Home() {
           },
         })
       }
+
       else if(pass==pass2 && pass.length<8){
         toast("wpisano za krótkie hasło",{
           action: {
@@ -111,6 +124,12 @@ export default function Home() {
       }
       catch(err){
         console.log(err)
+        toast("wpisano nie właściwe hasło lub nazwe/email",{
+          action: {
+            label: "X",
+            onClick: () => console.log("X"),
+          },
+        })
       }
       finally{
         if (pb.authStore.model) {
@@ -129,8 +148,18 @@ export default function Home() {
           },
         })
       }
+
       if(pass==null || pass==""){
         toast("nie wpisano hasła",{
+          action: {
+            label: "X",
+            onClick: () => console.log("X"),
+          },
+        })
+      }
+
+            if(pass!=null && pass.length<8){
+        toast("wpisano za krótkie hasło",{
           action: {
             label: "X",
             onClick: () => console.log("X"),

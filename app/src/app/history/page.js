@@ -15,11 +15,11 @@ export default function Home() {
     else {router.push("/login")}
 
   return (
-    <div>
+    <div className="flex flex-row">
       <div className="sticky top-0 w-[60px]">
         <Sidebarr />
       </div>
-      <ExpandableCardDemo classname="absolute" />
+      <ExpandableCardDemo/>
     </div>
   );
 }

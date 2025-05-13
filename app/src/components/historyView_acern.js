@@ -5,19 +5,21 @@ import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "@/components/use-outside-click";
 
 import PocketBase from 'pocketbase';
+import { ScrollArea } from "./ui/scroll-area";
 
 export function ExpandableCardDemo() {
     const [active, setActive] = useState(null);
     const ref = useRef(null);
     const id = useId();
     const [dane, setDane] = useState(null)
+    const [pyt, setPyt] = useState(null)
 
     const pb = new PocketBase('http://172.16.15.146:8080');
 
     useEffect(()=>{
         const getData = async ()=>{
             try{
-                const records = await pb.collection('questions').getFullList({ expand: 'numerSesji.kategoriaID', filter:`numerSesji.userID='${pb.authStore.model.id}'`});
+                const records = await pb.collection('sesions').getFullList({expand: 'kategoriaID'});
                 console.log(records)
                 setDane(records)           
             }
@@ -28,6 +30,19 @@ export function ExpandableCardDemo() {
         }
         getData()
     }, [])
+
+     const szukPyt = async(id) =>{
+            try{
+                const records = await pb.collection('questions').getFullList({
+                    filter: `numerSesji = '${id}'`,
+                });
+                setPyt(records)
+                console.log(records)
+            }
+            catch(err){
+                console.log(err)
+            }
+    }
 
     useEffect(() => {
         function onKeyDown(event) {
@@ -49,7 +64,7 @@ export function ExpandableCardDemo() {
     useOutsideClick(ref, () => setActive(null));
 
     return (
-        <>
+        <ScrollArea className='h-[100vh] w-[calc(100%-62px)]'>
             <AnimatePresence>
                 {active && typeof active === "object" && (
                     <motion.div
@@ -81,7 +96,7 @@ export function ExpandableCardDemo() {
                                 },
                             }}
                             className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
-                            onClick={() => setActive(null)}>
+                            onClick={() => {setActive(null)}}>
                             <CloseIcon />
                         </motion.button>
 
@@ -94,25 +109,26 @@ export function ExpandableCardDemo() {
                                 <img
                                     width={200}
                                     height={200}
-                                    src={pb.files.getURL(active.expand.numerSesji.expand.kategoriaID, active.expand.numerSesji.expand.kategoriaID.obraz)}
+                                    src={pb.files.getURL(active.expand.kategoriaID, active.expand.kategoriaID.obraz)}
                                     alt={active.pytanie}
                                     className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain object-top" />
                             </motion.div>
 
                             {/* uzupełnienie tekstu */}
                             <div>
+                                <ScrollArea>
+                                {pyt && pyt.map((item)=>(
+                                    <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
+                                        <p
+                                            // layoutId={`description-${active.description}-${id}`}
+                                            className="text-neutral-600 dark:text-neutral-400">
+                                            {item.pytanie}
+                                        </p>
+                                    </div>
+                                ))}
+                                </ScrollArea>
                                 <div className="flex justify-between items-start p-4">
                                     <div className="">
-                                        <motion.h3
-                                            layoutId={`title-${active.title}-${id}`}
-                                            className="font-bold text-neutral-700 dark:text-neutral-200">
-                                            {active.pytanie}
-                                        </motion.h3>
-                                        <motion.p
-                                            layoutId={`description-${active.description}-${id}`}
-                                            className="text-neutral-600 dark:text-neutral-400">
-                                            {active.odp4}
-                                        </motion.p>
                                     </div>
 
                                     <motion.a
@@ -141,23 +157,24 @@ export function ExpandableCardDemo() {
                         </motion.div>
                     </div>
                 ) : null}
+
             </AnimatePresence>
             <ul className="max-w-2xl mx-auto w-full gap-4">
 
                 {dane && dane.map((item, idx) => (
-                    <motion.div
-                        layoutId={`card-${item.id}-${id}`}
+                    <div
+                        // layoutId={`card-${item.id}-${id}`}
                         key={idx}
-                        onClick={() => setActive(item)}
+                        onClick={() => {setActive(item), szukPyt(item.id)}}
                         className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer">
                         <div className="flex gap-4 flex-col md:flex-row ">
 
                             {/* zdjecie */}
-                            <motion.div layoutId={`image-${item.expand.numerSesji.id}-${id}`}>
+                            <motion.div layoutId={`image-${item.id}-${id}`}>
                                 <img
                                     width={100}
                                     height={100}
-                                    src={pb.files.getURL(item.expand.numerSesji.expand.kategoriaID, item.expand.numerSesji.expand.kategoriaID.obraz)}
+                                    src={pb.files.getURL(item.expand.kategoriaID, item.expand.kategoriaID.obraz)}
                                     alt={dane.question}
                                     className="h-40 w-40 md:h-14 md:w-14 rounded-lg object-cover object-top" />
                             </motion.div>
@@ -165,27 +182,27 @@ export function ExpandableCardDemo() {
                             {/* przy małym obrazku */}
                             <div className="">
                                 <motion.h3
-                                    layoutId={`title-${item.expand.numerSesji.id}-${id}`}
+                                    layoutId={`title-${item.id}-${id}`}
                                     className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left">
-                                    {item.pytanie}
+                                    {item.expand.kategoriaID.nazwa}
                                 </motion.h3>
                                 <motion.p
-                                    layoutId={`description-${item.expand.numerSesji.id}-${id}`}
+                                    layoutId={`description-${item.id}-${id}`}
                                     className="text-neutral-600 dark:text-neutral-400 text-center md:text-left">
-                                    {item.odp4}
+                                    {item.updated }
                                 </motion.p>
                             </div>
                         </div>
                         {/* napis w małym guziku */}
                         <motion.button
-                            layoutId={`button-${item.expand.numerSesji.id}-${id}`}
-                            className="px-4 py-2 text-sm rounded-full font-bold bg-gray-100 hover:bg-green-500 hover:text-white text-black mt-4 md:mt-0">
-                            {item.pytanie}
+                            layoutId={`button-${item.id}-${id}`}
+                            className={`px-4 py-2 text-sm rounded-full font-bold bg-gray-100 ${item.poprawne<=6 ? `${item.poprawne<=3 ? 'hover:bg-red-500' : 'hover:bg-orange-500'}` : 'hover:bg-green-500'} hover:text-white text-black mt-4 md:mt-0`}>
+                            {item.poprawne}/10
                         </motion.button>
-                    </motion.div>
+                    </div>
                 ))}
             </ul>
-        </>
+        </ScrollArea>
     );
 }
 

@@ -27,6 +27,7 @@ export default function Home() {
     const [temat, setTemat] = useState(null)
     const [categories, setCategories] = useState(null)
     const [sesja, setSesja] = useState(null)
+    const [idSes, setIdSes] = useState(null) 
 
 
     useEffect(() => {
@@ -76,6 +77,7 @@ export default function Home() {
 
         const record = await pb.collection('questions').create(data);
         console.log(record)
+
         // {nrPyt==10 ? router.push("/") : null}
         // setTimeout(() => {
             setNrPyt(nrPyt+1)
@@ -85,7 +87,7 @@ export default function Home() {
     const sesion = async()=>{
         const data = {
             "userID": pb.authStore.model.id,
-            "kategoriaID": 'nclpqpxqnctfqh2'
+            "kategoriaID": idSes
         };
         
         const record = await pb.collection('sesions').create(data);
@@ -97,13 +99,13 @@ export default function Home() {
         <div>
             {nrPyt==0 &&
                 <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 border-2 border-dashed">
-                <Select onValueChange={(e)=>setTemat(e)}>
+                <Select onValueChange={(e)=>{setTemat(e.nazwa), setIdSes(e.id)}}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Temat quizu" />
                     </SelectTrigger>
                     <SelectContent>
                         {categories && categories.map((item, idx)=>(
-                            <SelectItem value={item.nazwa} key={idx}>{item.skrot}</SelectItem>
+                            <SelectItem value={{nazwa: item.skrot, id:item.id}} key={idx}>{item.skrot}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
