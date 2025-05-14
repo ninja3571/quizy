@@ -28,7 +28,7 @@ export default function Home() {
     const [categories, setCategories] = useState(null)
     const [sesja, setSesja] = useState(null)
     const [idKat, setIdKat] = useState(null) 
-    // const [wybr, setWybr] = useState(null)
+    const [wybr, setWybr] = useState(null)
     const [popr, setPopr] = useState(null)
 
 
@@ -69,7 +69,7 @@ export default function Home() {
         // }, 200);
     }, [nrPyt])
 
-    const next = async({wybr})=>{
+    const next = async()=>{
         const data = {
             "pytanie": `${pyt.output.question}`,
             "odp1": `${pyt.output.answers[0].text}`,
@@ -146,7 +146,7 @@ export default function Home() {
                     <h1>{pyt.output.question}</h1>
                     <div className="flex flex-col gap-4 min-h-[100px] ">
                         {pyt.output.answers.map((item, idx) => (
-                            <Button key={idx} className={`h-auto w-auto ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={next(idx)}>{item.text}</Button>
+                            <Button key={idx} className={`h-auto w-auto ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={next}>{item.text}</Button>
                         ))}
                     </div>
                 </div>
