@@ -1,7 +1,7 @@
 "use client"
 
 import Sidebarr from "@/components/sideBar";
-import { WykresGradLin } from "@/components/wykresy";
+import { WykresGradLin } from "@/components/wykresLin";
 import { useRouter } from "next/navigation";
 import PocketBase from 'pocketbase';
 

@@ -3,9 +3,17 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "@/components/use-outside-click";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
 
 import PocketBase from 'pocketbase';
 import { ScrollArea } from "./ui/scroll-area";
+import { WykresBar } from "./wykresBar";
 
 export function ExpandableCardDemo() {
     const [active, setActive] = useState(null);
@@ -13,13 +21,14 @@ export function ExpandableCardDemo() {
     const id = useId();
     const [dane, setDane] = useState(null)
     const [pyt, setPyt] = useState(null)
+    const [all, setAll] = useState(null)
 
     const pb = new PocketBase('http://172.16.15.146:8080');
 
     useEffect(()=>{
         const getData = async ()=>{
             try{
-                const records = await pb.collection('sesions').getFullList({expand: 'kategoriaID'});
+                const records = await pb.collection('sesions').getFullList({expand: 'kategoriaID',  sort: '-created'});
                 console.log(records)
                 setDane(records)           
             }
@@ -37,6 +46,7 @@ export function ExpandableCardDemo() {
                     filter: `numerSesji = '${id}'`,
                 });
                 setPyt(records)
+                setAll(records.length)
                 console.log(records)
             }
             catch(err){
@@ -116,29 +126,27 @@ export function ExpandableCardDemo() {
 
                             {/* uzupełnienie tekstu */}
                             <div>
-                                <ScrollArea>
-                                {pyt && pyt.map((item)=>(
-                                    <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
-                                        <p
-                                            // layoutId={`description-${active.description}-${id}`}
-                                            className="text-neutral-600 dark:text-neutral-400">
-                                            {item.pytanie}
-                                        </p>
-                                    </div>
-                                ))}
-                                </ScrollArea>
-                                <div className="flex justify-between items-start p-4">
-                                    <div className="">
-                                    </div>
+                                <ScrollArea className='h-[50vh] px-3'>
+                                    <Accordion type="single" collapsible>
 
-                                    <motion.a
-                                        layoutId={`button-${active.title}-${id}`}
-                                        href={active.ctaLink}
-                                        target="_blank"
-                                        className="px-4 py-3 text-sm rounded-full font-bold bg-green-500 text-white">
-                                        {active.pytanie}
-                                    </motion.a>
-                                </div>
+                                        {pyt && pyt.map((item)=>(
+                                        <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
+                                            <AccordionItem value={item.nrPytania}>
+                                                <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none'>{item.pytanie}</AccordionTrigger>
+                                                <AccordionContent className='bg-gray-100 rounded-b-md'>
+                                                    <h1 className={`${item.odpWybr==item.odp1 ? `${item.odpPopr==item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` :  `${item.odpPopr==item.odp1 ? 'bg-green-300' : null}` }`}>{item.odp1}</h1>
+                                                    <h1 className={`${item.odpWybr==item.odp2 ? `${item.odpPopr==item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` :  `${item.odpPopr==item.odp2 ? 'bg-green-300' : null}` }`}>{item.odp2}</h1>
+                                                    <h1 className={`${item.odpWybr==item.odp3 ? `${item.odpPopr==item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` :  `${item.odpPopr==item.odp3 ? 'bg-green-300' : null}` }`}>{item.odp3}</h1>
+                                                    <h1 className={`${item.odpWybr==item.odp4 ? `${item.odpPopr==item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` :  `${item.odpPopr==item.odp4 ? 'bg-green-300' : null}` }`}>{item.odp4}</h1>
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        </div>    
+                                        ))}
+                                </Accordion>
+
+                                {console.log({active})}
+                                <WykresBar popr={active.poprawne} all={all}/>
+                                </ScrollArea>
 
                                 {/* przycisk i pod nim */}
                                 <div className="pt-4 relative px-4">
@@ -163,7 +171,6 @@ export function ExpandableCardDemo() {
 
                 {dane && dane.map((item, idx) => (
                     <div
-                        // layoutId={`card-${item.id}-${id}`}
                         key={idx}
                         onClick={() => {setActive(item), szukPyt(item.id)}}
                         className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer">
