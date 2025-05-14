@@ -4,10 +4,10 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "@/components/use-outside-click";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
 } from "@/components/ui/accordion"
 
 
@@ -23,16 +23,17 @@ export function ExpandableCardDemo() {
     const [pyt, setPyt] = useState(null)
     const [all, setAll] = useState(null)
 
-    const pb = new PocketBase('http://172.16.15.146:8080');
+    // const pb = new PocketBase('http://172.16.15.146:8080');
+    const pb = new PocketBase('http://192.168.60.25:8080');
 
-    useEffect(()=>{
-        const getData = async ()=>{
-            try{
-                const records = await pb.collection('sesions').getFullList({expand: 'kategoriaID',  sort: '-created'});
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const records = await pb.collection('sesions').getFullList({ expand: 'kategoriaID', sort: '-created' });
                 console.log(records)
-                setDane(records)           
+                setDane(records)
             }
-            catch(err){
+            catch (err) {
                 console.log(err)
             }
 
@@ -40,18 +41,18 @@ export function ExpandableCardDemo() {
         getData()
     }, [])
 
-     const szukPyt = async(id) =>{
-            try{
-                const records = await pb.collection('questions').getFullList({
-                    filter: `numerSesji = '${id}'`,
-                });
-                setPyt(records)
-                setAll(records.length)
-                console.log(records)
-            }
-            catch(err){
-                console.log(err)
-            }
+    const szukPyt = async (id) => {
+        try {
+            const records = await pb.collection('questions').getFullList({
+                filter: `numerSesji = '${id}'`,
+            });
+            setPyt(records)
+            setAll(records.length)
+            console.log(records)
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -85,7 +86,7 @@ export function ExpandableCardDemo() {
                 )}
             </AnimatePresence>
             <AnimatePresence>
-                
+
                 {dane && active && typeof active === "object" ? (
 
                     // po kliknięciu
@@ -106,7 +107,7 @@ export function ExpandableCardDemo() {
                                 },
                             }}
                             className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
-                            onClick={() => {setActive(null)}}>
+                            onClick={() => { setActive(null) }}>
                             <CloseIcon />
                         </motion.button>
 
@@ -129,23 +130,23 @@ export function ExpandableCardDemo() {
                                 <ScrollArea className='h-[50vh] px-3'>
                                     <Accordion type="single" collapsible>
 
-                                        {pyt && pyt.map((item)=>(
-                                        <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
-                                            <AccordionItem value={item.nrPytania}>
-                                                <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none'>{item.pytanie}</AccordionTrigger>
-                                                <AccordionContent className='bg-gray-100 rounded-b-md'>
-                                                    <h1 className={`${item.odpWybr==item.odp1 ? `${item.odpPopr==item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` :  `${item.odpPopr==item.odp1 ? 'bg-green-300' : null}` }`}>{item.odp1}</h1>
-                                                    <h1 className={`${item.odpWybr==item.odp2 ? `${item.odpPopr==item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` :  `${item.odpPopr==item.odp2 ? 'bg-green-300' : null}` }`}>{item.odp2}</h1>
-                                                    <h1 className={`${item.odpWybr==item.odp3 ? `${item.odpPopr==item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` :  `${item.odpPopr==item.odp3 ? 'bg-green-300' : null}` }`}>{item.odp3}</h1>
-                                                    <h1 className={`${item.odpWybr==item.odp4 ? `${item.odpPopr==item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` :  `${item.odpPopr==item.odp4 ? 'bg-green-300' : null}` }`}>{item.odp4}</h1>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                        </div>    
+                                        {pyt && pyt.map((item) => (
+                                            <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
+                                                <AccordionItem value={item.nrPytania}>
+                                                    <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100'>{item.pytanie}</AccordionTrigger>
+                                                    <AccordionContent className='bg-gray-100 rounded-b-md'>
+                                                        <h1 className={`${item.odpWybr == item.odp1 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp1 ? 'bg-green-300' : null}`}`}>{item.odp1}</h1>
+                                                        <h1 className={`${item.odpWybr == item.odp2 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp2 ? 'bg-green-300' : null}`}`}>{item.odp2}</h1>
+                                                        <h1 className={`${item.odpWybr == item.odp3 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp3 ? 'bg-green-300' : null}`}`}>{item.odp3}</h1>
+                                                        <h1 className={`${item.odpWybr == item.odp4 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp4 ? 'bg-green-300' : null}`}`}>{item.odp4}</h1>
+                                                    </AccordionContent>
+                                                </AccordionItem>
+                                            </div>
                                         ))}
-                                </Accordion>
+                                    </Accordion>
 
-                                {console.log({active})}
-                                <WykresBar popr={active.poprawne} all={all}/>
+                                    {console.log({ active })}
+                                    <WykresBar popr={active.poprawne} all={all} />
                                 </ScrollArea>
 
                                 {/* przycisk i pod nim */}
@@ -172,7 +173,7 @@ export function ExpandableCardDemo() {
                 {dane && dane.map((item, idx) => (
                     <div
                         key={idx}
-                        onClick={() => {setActive(item), szukPyt(item.id)}}
+                        onClick={() => { setActive(item), szukPyt(item.id) }}
                         className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer">
                         <div className="flex gap-4 flex-col md:flex-row ">
 
@@ -196,15 +197,15 @@ export function ExpandableCardDemo() {
                                 <motion.p
                                     layoutId={`description-${item.id}-${id}`}
                                     className="text-neutral-600 dark:text-neutral-400 text-center md:text-left">
-                                    {item.updated }
+                                    {item.updated}
                                 </motion.p>
                             </div>
                         </div>
                         {/* napis w małym guziku */}
                         <motion.button
                             layoutId={`button-${item.id}-${id}`}
-                            className={`px-4 py-2 text-sm rounded-full font-bold bg-gray-100 ${item.poprawne<=6 ? `${item.poprawne<=3 ? 'hover:bg-red-500' : 'hover:bg-orange-500'}` : 'hover:bg-green-500'} hover:text-white text-black mt-4 md:mt-0`}>
-                            {item.poprawne}/10
+                            className={`px-4 py-2 text-sm rounded-full font-bold bg-gray-100 ${item.poprawne <= 6 ? `${item.poprawne <= 3 ? 'hover:bg-red-500' : 'hover:bg-orange-500'}` : 'hover:bg-green-500'} hover:text-white text-black mt-4 md:mt-0`}>
+                            {item.poprawne}/{all}
                         </motion.button>
                     </div>
                 ))}
