@@ -5,7 +5,7 @@ import PocketBase from 'pocketbase';
 export default function Sidebarr() {
 
     const pb = new PocketBase('http://172.16.15.146:8080');
-    const logout = async () =>{
+    const logout = async () => {
         pb.authStore.clear();
     }
 
@@ -39,12 +39,13 @@ export default function Sidebarr() {
                         )
                     }}
                 />
+
                 <SidebarLink
                     link={{
                         label: "Wyloguj",
                         href: "/login",
                         icon: (
-                            <LogOut/>
+                            <LogOut />
                         ),
                     }}
                     onClick={logout}

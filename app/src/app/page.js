@@ -1,6 +1,7 @@
 "use client"
 
 import Sidebarr from "@/components/sideBar";
+import { ModeToggle } from "@/components/toggleTheme";
 import { WykresGradLin } from "@/components/wykresLin";
 import { useRouter } from "next/navigation";
 import PocketBase from 'pocketbase';
@@ -20,6 +21,9 @@ export default function Home() {
       <WykresGradLin className="h-1/2 w-full -z-10" />
       <div className="sticky top-0 w-[60px]">
         <Sidebarr />
+      </div>
+      <div className="absolute bottom-5 right-5">
+        <ModeToggle />
       </div>
     </div>
 

@@ -16,6 +16,7 @@ import { LogOut } from "lucide-react";
 import { PolWykres } from "@/components/wykresQuiz";
 import { Confetti } from "@/components/magicui/confetti";
 import { ConfettiFireworks } from "@/components/confettiFireworks";
+import { ModeToggle } from "@/components/toggleTheme";
 
 export default function Home() {
 
@@ -38,6 +39,7 @@ export default function Home() {
     const [popr, setPopr] = useState(null)
     const [allPopr, setAllPopr] = useState(0)
     const [numb, setNumb] = useState(0)
+    const [chosen, setChosen] = useState(false)
 
 
     useEffect(() => {
@@ -172,10 +174,13 @@ export default function Home() {
 
     return (
         <div>
+            <div className="absolute bottom-5 right-5">
+                <ModeToggle />
+            </div>
             {nrPyt == 0 &&
                 <>
-                    <Card onClick={main} className='p-4 w-[50px] absolute top-[40%] translate-y-[-50%] left-[30%] translate-x-[-50%] cursor-pointer hover:bg-gray-50'>
-                        <LogOut />
+                    <Card onClick={main} className='p-4 absolute top-[70%] translate-y-[-50%] left-[50%] translate-x-[-50%] cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 flex flex-row'>
+                        <LogOut /> <h1>Menu</h1>
                     </Card>
                     <div className="h-[100vh]"></div>
                     <Card className="absolute top-[50%] left-[50%] translate-x-[-50%] p-4 border-2 border-dashed">
@@ -189,7 +194,7 @@ export default function Home() {
                                 className="absolute top-[50%] translate-y-[calc(-100%-60px)] left-[50%] translate-x-[-50%] bg-gray-100 mb-3"
                             />
                         }
-                        <Select onValueChange={(e) => { const selected = JSON.parse(e); setTemat(selected.nazwa), setIdKat(selected.id), setNumb(selected.num); }}>
+                        <Select onValueChange={(e) => { const selected = JSON.parse(e); setTemat(selected.nazwa), setIdKat(selected.id), setNumb(selected.num), setChosen(true) }}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Temat quizu" />
                             </SelectTrigger>
@@ -199,16 +204,17 @@ export default function Home() {
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Button className="w-[100%] mt-2" onClick={sesion}>Graj</Button>
+                        <Button disabled={chosen ? false : true} className='w-[100%] mt-2' onClick={sesion}>Graj</Button>
                     </Card>
                 </>
             }
             {nrPyt >= 1 && nrPyt <= 10 && pyt &&
                 <>
+                    <Card onClick={main} className='p-4 absolute top-[70%] translate-y-[-50%] left-[50%] translate-x-[-50%] cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 flex flex-row'>
+                        <LogOut /> <h1>Menu</h1>
+                    </Card>
+                    <div className="h-[100vh]"></div>
                     <Card className='absolute top-[50%] translate-y-[-50%] left-[50%] translate-x-[-50%] p-3 flex flex-row'>
-                        <Card onClick={main} className='p-4 w-[50px] h-[56px] cursor-pointer hover:bg-gray-50'>
-                            <LogOut />
-                        </Card>
                         <div className="flex flex-col items-center">
                             <h1>{pyt.output.question}</h1>
                             <div className="flex flex-col gap-4 min-h-[100px] ">

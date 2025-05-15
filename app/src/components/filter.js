@@ -92,13 +92,13 @@ export default function Filter({ danen, id }) {
     };
 
     return (
-        <Card className="p-4 m-2">
+        <Card className="p-4 m-2 h-[20vh]">
             <CardHeader>
                 <CardTitle>
-                    Filter Sessions
+                    Filters
                 </CardTitle>
             </CardHeader>
-            <CardContent className='flex flex-row gap-3'>
+            <CardContent className='flex flex-row gap-3 justify-center items-center'>
 
                 {/* Category Checkboxes */}
                 <div className="mb-4 border-r-2 pr-2">
@@ -116,23 +116,31 @@ export default function Filter({ danen, id }) {
                 </div>
 
                 {/* Number Filters */}
-                <div className="mb-4 border-r-2 pr-2">
+                <div className="mb-4 border-r-2 pr-2 w-1/5">
                     <label>
-                        Min Correct:
+                        <strong>Ilość poprawnych odp:</strong>
+                        <br />
                         <input
                             type="number"
                             value={minCorrect}
+                            max={10}
+                            min={0}
+                            placeholder="0"
                             onChange={(e) => setMinCorrect(e.target.value)}
                             className="ml-2 border-2 rounded-xl pl-3"
                         />
                     </label>
                 </div>
-                <div className="mb-4 border-r-2 pr-2">
+                <div className="mb-4 w-1/5">
                     <label>
-                        Max Total:
+                        <strong>Ilość zadanych pytań:</strong>
+                        <br />
                         <input
                             type="number"
                             value={maxAll}
+                            max={10}
+                            min={0}
+                            placeholder="10"
                             onChange={(e) => setMaxAll(e.target.value)}
                             className="ml-2 border-2 rounded-xl pl-3"
                         />
@@ -140,9 +148,10 @@ export default function Filter({ danen, id }) {
                 </div>
 
                 {/* Date Filters */}
-                <div className="mb-4 border-r-2 pr-2">
+                {/* <div className="mb-4 border-r-2 pr-2">
                     <label>
-                        Start Date:
+                        <strong>Start Date:</strong>
+                        <br />
                         <input
                             type="date"
                             value={startDate}
@@ -153,7 +162,8 @@ export default function Filter({ danen, id }) {
                 </div>
                 <div className="mb-4">
                     <label>
-                        End Date:
+                        <strong>End Date:</strong>
+                        <br />
                         <input
                             type="date"
                             value={endDate}
@@ -161,7 +171,7 @@ export default function Filter({ danen, id }) {
                             className="ml-2 border-2 rounded-xl pl-3"
                         />
                     </label>
-                </div>
+                </div> */}
             </CardContent>
         </Card>
     );

@@ -23,6 +23,7 @@ import { useState } from "react";
 import PocketBase from 'pocketbase';
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { ModeToggle } from "@/components/toggleTheme";
 
 export default function Home() {
 
@@ -174,6 +175,9 @@ export default function Home() {
   return (
     // tło - modyfikacje
     <div className="overflow-hidden">
+      <div className="absolute right-5 bottom-5">
+        <ModeToggle />
+      </div>
       <FlickeringGrid
         squareSize={8}
         gridGap={2}
@@ -192,11 +196,11 @@ export default function Home() {
             <CardContent className="space-y-2">
               <div className="space-y-1">
                 <Label htmlFor="1username">Username or Email</Label>
-                <Input id="1username" placeholder="username / email" className="placeholder:text-emerald-900 border-black" onChange={(e) => { setName(e.target.value) }} />
+                <Input id="1username" placeholder="username / email" className="placeholder:text-emerald-900 border-black dark:placeholder:text-emerald-400" onChange={(e) => { setName(e.target.value) }} />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="1pass">Password</Label>
-                <Input id="1pass" placeholder="password" type="password" className="placeholder:text-emerald-900 border-black" onChange={(e) => { setPass(e.target.value) }} />
+                <Input id="1pass" placeholder="password" type="password" className="placeholder:text-emerald-900 border-black dark:placeholder:text-emerald-400" onChange={(e) => { setPass(e.target.value) }} />
               </div>
             </CardContent>
             <CardFooter className="flex justify-center">
@@ -214,19 +218,19 @@ export default function Home() {
             <CardContent className="space-y-2">
               <div className="space-y-1">
                 <Label htmlFor="2username">Username</Label>
-                <Input id="2username" placeholder="username" className="placeholder:text-emerald-900 border-black" onChange={(e) => { setName(e.target.value) }} />
+                <Input id="2username" placeholder="username" className="placeholder:text-emerald-900 border-black dark:placeholder:text-emerald-400" onChange={(e) => { setName(e.target.value) }} />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="1pass">Email</Label>
-                <Input id="email" placeholder="email" className="placeholder:text-emerald-900 border-black" onChange={(e) => { setEmail(e.target.value) }} />
+                <Input id="email" placeholder="email" className="placeholder:text-emerald-900 border-black dark:placeholder:text-emerald-400" onChange={(e) => { setEmail(e.target.value) }} />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="2pass">Password</Label>
-                <Input id="2pass" type="password" placeholder="password" className="placeholder:text-emerald-900 border-black" onChange={(e) => { setPass(e.target.value) }} />
+                <Input id="2pass" type="password" placeholder="password" className="placeholder:text-emerald-900 border-black dark:placeholder:text-emerald-400" onChange={(e) => { setPass(e.target.value) }} />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="2pass2">Repeat Password</Label>
-                <Input id="2pass2" type="password" placeholder="repeat password" className="placeholder:text-emerald-900 border-black" onChange={(e) => { setPass2(e.target.value) }} />
+                <Input id="2pass2" type="password" placeholder="repeat password" className="placeholder:text-emerald-900 border-black dark:placeholder:text-emerald-400" onChange={(e) => { setPass2(e.target.value) }} />
               </div>
             </CardContent>
             <CardFooter className="flex justify-center">

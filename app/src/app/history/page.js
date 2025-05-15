@@ -2,6 +2,7 @@
 
 import { ExpandableCardDemo } from "@/components/historyView_acern";
 import Sidebarr from "@/components/sideBar";
+import { ModeToggle } from "@/components/toggleTheme";
 import { useRouter } from "next/navigation";
 import PocketBase from 'pocketbase';
 
@@ -22,6 +23,10 @@ export default function Home() {
       </div>
       <div className="w-full h-screen">
         <ExpandableCardDemo />
+
+        <div className="absolute bottom-5 right-5">
+          <ModeToggle />
+        </div>
       </div>
     </div>
   );

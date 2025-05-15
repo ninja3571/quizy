@@ -79,7 +79,7 @@ export function ExpandableCardDemo() {
         <>
             <Filter danen={setDane} />
 
-            <ScrollArea className='h-[100vh] w-[calc(100%-62px)] mt-2'>
+            <ScrollArea className='h-[calc(80vh-16px)] w-[calc(100%-62px)] pt-2'>
                 <AnimatePresence>
                     {active && typeof active === "object" && (
                         <motion.div
@@ -182,14 +182,15 @@ export function ExpandableCardDemo() {
                             <div className="flex gap-4 flex-col md:flex-row ">
 
                                 {/* zdjecie */}
-                                <motion.div layoutId={`image-${item.id}-${id}`}>
-                                    <img
-                                        width={100}
-                                        height={100}
-                                        src={pb.files.getURL(item.expand.kategoriaID, item.expand.kategoriaID.obraz)}
-                                        alt={dane.question}
-                                        className="h-40 w-40 md:h-14 md:w-14 rounded-lg object-cover object-top" />
-                                </motion.div>
+                                {item.expand && item.expand.kategoriaID &&
+                                    <motion.div layoutId={`image-${item.id}-${id}`}>
+                                        <img
+                                            width={100}
+                                            height={100}
+                                            src={pb.files.getURL(item.expand.kategoriaID, item.expand.kategoriaID.obraz)}
+                                            alt={dane.question}
+                                            className="h-40 w-40 md:h-14 md:w-14 rounded-lg object-cover object-top" />
+                                    </motion.div>}
 
                                 {/* przy małym obrazku */}
                                 <div className="">
