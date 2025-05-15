@@ -11,12 +11,16 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { Card } from "@/components/ui/card";
+import { LogOut } from "lucide-react";
+import { PolWykres } from "@/components/wykresQuiz";
+import { Confetti } from "@/components/magicui/confetti";
+import { ConfettiFireworks } from "@/components/confettiFireworks";
 
 export default function Home() {
 
-    const pb = new PocketBase('http://172.16.15.146:8080');
-    // const pb = new PocketBase('http://192.168.60.25:8080');
+    // const pb = new PocketBase('http://172.16.15.146:8080');
+    const pb = new PocketBase('http://192.168.60.25:8080');
     const router = useRouter()
 
     if (pb.authStore.model) {
@@ -53,9 +57,10 @@ export default function Home() {
 
     useEffect(() => {
         const getData = async () => {
+            // setPyt(null)
             try {
-                const data = await fetch(`http://172.16.15.146:5678/webhook/quiz`, { headers: { "topic": temat } })
-                // const data = await fetch(`http://192.168.60.25:5678/webhook/quiz`, { headers: { "topic": temat } })
+                // const data = await fetch(`http://172.16.15.146:5678/webhook/quiz`, { headers: { "topic": temat } })
+                const data = await fetch(`http://192.168.60.25:5678/webhook/quiz`, { headers: { "topic": temat } })
                 const json = await data.json()
                 console.log(json)
                 setPyt(json)
@@ -76,35 +81,35 @@ export default function Home() {
 
 
     useEffect(() => {
-        const next = async() => {
+        const next = async () => {
 
-            if(wybr==popr){
-                setAllPopr(allPopr+1)
+            if (wybr == popr) {
+                setAllPopr(allPopr + 1)
             }
 
-            if(wybr != null){
-                            const data = {
-                "pytanie": `${pyt.output.question}`,
-                "odp1": `${pyt.output.answers[0].text}`,
-                "odp2": `${pyt.output.answers[1].text}`,
-                "odp3": `${pyt.output.answers[2].text}`,
-                "odp4": `${pyt.output.answers[3].text ? pyt.output.answers[3].text : ''}`,
-                "odpPopr": `${popr}`,
-                "odpWybr": `${wybr}`,
-                "numerSesji": sesja,
-                "nrPytania": nrPyt
-            };
-    
-            const record = await pb.collection('questions').create(data);
-            console.log(record)
-    
-            const daten = {
-                "poprawne": allPopr,
-                "all": nrPyt
-            };
-            
-            const recorden = await pb.collection('sesions').update(sesja, daten);
-            setNrPyt(nrPyt + 1)
+            if (wybr != null) {
+                const data = {
+                    "pytanie": `${pyt.output.question}`,
+                    "odp1": `${pyt.output.answers[0].text}`,
+                    "odp2": `${pyt.output.answers[1].text}`,
+                    "odp3": `${pyt.output.answers[2].text}`,
+                    "odp4": `${pyt.output.answers[3] ? pyt.output.answers[3].text : ''}`,
+                    "odpPopr": `${popr}`,
+                    "odpWybr": `${wybr}`,
+                    "numerSesji": sesja,
+                    "nrPytania": nrPyt
+                };
+
+                const record = await pb.collection('questions').create(data);
+                console.log(record)
+
+                const daten = {
+                    "poprawne": allPopr,
+                    "all": nrPyt
+                };
+
+                const recorden = await pb.collection('sesions').update(sesja, daten);
+                setNrPyt(nrPyt + 1)
             }
         }
         next()
@@ -128,7 +133,7 @@ export default function Home() {
             "poprawne": allPopr,
             "all": nrPyt
         };
-            
+
         const recorden = await pb.collection('sesions').update(sesja, daten);
 
         setAllPopr(0)
@@ -141,24 +146,27 @@ export default function Home() {
 
         const record = await pb.collection('sesions').create(data);
         setSesja(record.id)
-        sesja && setNrPyt(1)
+        setNrPyt(1)
     }
 
     const reset = async () => {
         const daten = {
             "poprawne": allPopr,
         };
-            
+
         const recorden = await pb.collection('sesions').update(sesja, daten);
         setNrPyt(0)
     }
 
     const main = async () => {
-        const daten = {
-            "poprawne": allPopr,
-        };
-            
-        const recorden = await pb.collection('sesions').update(sesja, daten);
+        if (sesja != null) {
+            const daten = {
+                "poprawne": allPopr,
+            };
+
+            const recorden = await pb.collection('sesions').update(sesja, daten);
+        }
+
         router.push("/")
     }
 
@@ -166,46 +174,61 @@ export default function Home() {
         <div>
             {nrPyt == 0 &&
                 <>
+                    <Card onClick={main} className='p-4 w-[50px] absolute top-[40%] translate-y-[-50%] left-[30%] translate-x-[-50%] cursor-pointer hover:bg-gray-50'>
+                        <LogOut />
+                    </Card>
                     <div className="h-[100vh]"></div>
-                    <div className="absolute top-[50%] left-[50%] translate-x-[-50%] p-4 border-2 border-dashed">
+                    <Card className="absolute top-[50%] left-[50%] translate-x-[-50%] p-4 border-2 border-dashed">
+
                         {idKat &&
                             <img
                                 src={pb.files.getURL(categories[numb], categories[numb].obraz)}
                                 width={300}
                                 height={300}
                                 alt="wololo"
-                                className="absolute top-[50%] translate-y-[calc(-100%-60px)] left-[50%] translate-x-[-50%] bg-gray-100"
+                                className="absolute top-[50%] translate-y-[calc(-100%-60px)] left-[50%] translate-x-[-50%] bg-gray-100 mb-3"
                             />
-                        } 
-                        <Select onValueChange={(e) => { setTemat(e.nazwa), setIdKat(e.id), console.log(e), setNumb(e.num) }}>
+                        }
+                        <Select onValueChange={(e) => { const selected = JSON.parse(e); setTemat(selected.nazwa), setIdKat(selected.id), setNumb(selected.num); }}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Temat quizu" />
                             </SelectTrigger>
                             <SelectContent>
                                 {categories && categories.map((item, idx) => (
-                                    <SelectItem key={idx} value={{ id:item.id, nazwa:item.skrot, num:idx }}>{item.skrot}</SelectItem>
+                                    <SelectItem key={idx} value={JSON.stringify({ id: item.id, nazwa: item.skrot, num: idx })}>{item.skrot}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         <Button className="w-[100%] mt-2" onClick={sesion}>Graj</Button>
-                    </div>
+                    </Card>
                 </>
             }
             {nrPyt >= 1 && nrPyt <= 10 && pyt &&
-                <div className=" w-1/3 flex flex-col items-center">
-                    <h1>{pyt.output.question}</h1>
-                    <div className="flex flex-col gap-4 min-h-[100px] ">
-                        {pyt.output.answers.map((item, idx) => (
-                            <Button key={idx} value={item.text} className={`h-auto w-auto hover:${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={(e)=>{setWybr(e.target.value)}}>{item.text}</Button>
-                        ))}
-                    </div>
-                </div>
+                <>
+                    <Card className='absolute top-[50%] translate-y-[-50%] left-[50%] translate-x-[-50%] p-3 flex flex-row'>
+                        <Card onClick={main} className='p-4 w-[50px] h-[56px] cursor-pointer hover:bg-gray-50'>
+                            <LogOut />
+                        </Card>
+                        <div className="flex flex-col items-center">
+                            <h1>{pyt.output.question}</h1>
+                            <div className="flex flex-col gap-4 min-h-[100px] ">
+                                {pyt.output.answers.map((item, idx) => (
+                                    <Button key={idx} value={item.text} className={`h-auto w-auto hover:${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={(e) => { setWybr(e.target.value) }}>{item.text}</Button>
+                                ))}
+                            </div>
+                        </div>
+                    </Card>
+                </>
             }
             {nrPyt == 11 &&
-                <div className="absolute top-[50%] left-[50%] translate-x-[-50%] p-4 border-2 border-dashed">
-                    <Button className="w-[100%] mt-2" onClick={again}>Zagraj ponownie</Button>
-                    <Button className="w-[100%] mt-2" onClick={reset}>Zmień temat</Button>
-                    <Button className="w-[100%] mt-2" onClick={main}>Main</Button>
+                <div className="absolute top-[50%] translate-y-[-50%] left-[50%] translate-x-[-50%] p-4 w-[350px]">
+                    <ConfettiFireworks />
+                    <PolWykres all={10} popr={allPopr} />
+                    <Card className='gap-1 p-3'>
+                        <Button className="w-[100%] mt-2" onClick={again}>Zagraj ponownie</Button>
+                        <Button className="w-[100%] mt-2" onClick={reset}>Zmień temat</Button>
+                        <Button className="w-[100%] mt-2" onClick={main}>Main</Button>
+                    </Card>
                 </div>
             }
         </div>

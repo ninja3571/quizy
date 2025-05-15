@@ -15,6 +15,8 @@ import PocketBase from 'pocketbase';
 import { ScrollArea } from "./ui/scroll-area";
 import { WykresBar } from "./wykresBar";
 import { Check, X } from "lucide-react";
+import { Card } from "./ui/card";
+import Filter from "@/components/filter";
 
 export function ExpandableCardDemo() {
     const [active, setActive] = useState(null);
@@ -23,8 +25,8 @@ export function ExpandableCardDemo() {
     const [dane, setDane] = useState(null)
     const [pyt, setPyt] = useState(null)
 
-    const pb = new PocketBase('http://172.16.15.146:8080');
-    // const pb = new PocketBase('http://192.168.60.25:8080');
+    // const pb = new PocketBase('http://172.16.15.146:8080');
+    const pb = new PocketBase('http://192.168.60.25:8080');
 
     useEffect(() => {
         const getData = async () => {
@@ -74,142 +76,146 @@ export function ExpandableCardDemo() {
     useOutsideClick(ref, () => setActive(null));
 
     return (
-        <ScrollArea className='h-[100vh] w-[calc(100%-62px)]'>
-            <AnimatePresence>
-                {active && typeof active === "object" && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/20 h-full w-full z-10" />
-                )}
-            </AnimatePresence>
-            <AnimatePresence>
+        <>
+            <Filter danen={setDane} />
 
-                {dane && active && typeof active === "object" ? (
-
-                    // po kliknięciu
-                    <div className="fixed inset-0 grid place-items-center z-[100]">
-                        <motion.button
-                            key={`button-${active.title}-${dane.id}`}
-                            layout
-                            initial={{
-                                opacity: 0,
-                            }}
-                            animate={{
-                                opacity: 1,
-                            }}
-                            exit={{
-                                opacity: 0,
-                                transition: {
-                                    duration: 0.05,
-                                },
-                            }}
-                            className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
-                            onClick={() => { setActive(null) }}>
-                            <CloseIcon />
-                        </motion.button>
-
-                        {/* obraz (duży) */}
+            <ScrollArea className='h-[100vh] w-[calc(100%-62px)] mt-2'>
+                <AnimatePresence>
+                    {active && typeof active === "object" && (
                         <motion.div
-                            layoutId={`card-${active.pytanie}-${dane.id}`}
-                            ref={ref}
-                            className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden">
-                            <motion.div layoutId={`image-${active.pytanie}-${id}`}>
-                                <img
-                                    width={200}
-                                    height={200}
-                                    src={pb.files.getURL(active.expand.kategoriaID, active.expand.kategoriaID.obraz)}
-                                    alt={active.pytanie}
-                                    className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain object-top" />
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/20 h-full w-full z-10" />
+                    )}
+                </AnimatePresence>
+                <AnimatePresence>
+
+                    {dane && active && typeof active === "object" ? (
+
+                        // po kliknięciu
+                        <div className="fixed inset-0 grid place-items-center z-[100]">
+                            <motion.button
+                                key={`button-${active.title}-${dane.id}`}
+                                layout
+                                initial={{
+                                    opacity: 0,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                }}
+                                exit={{
+                                    opacity: 0,
+                                    transition: {
+                                        duration: 0.05,
+                                    },
+                                }}
+                                className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
+                                onClick={() => { setActive(null) }}>
+                                <CloseIcon />
+                            </motion.button>
+
+                            {/* obraz (duży) */}
+                            <motion.div
+                                layoutId={`card-${active.pytanie}-${dane.id}`}
+                                ref={ref}
+                                className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden">
+                                <motion.div layoutId={`image-${active.pytanie}-${id}`}>
+                                    <img
+                                        width={200}
+                                        height={200}
+                                        src={pb.files.getURL(active.expand.kategoriaID, active.expand.kategoriaID.obraz)}
+                                        alt={active.pytanie}
+                                        className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain object-top" />
+                                </motion.div>
+
+                                {/* uzupełnienie tekstu */}
+                                <div>
+                                    <ScrollArea className='h-[50vh] px-3'>
+                                        <Accordion type="single" collapsible>
+
+                                            {pyt && pyt.map((item) => (
+                                                <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
+                                                    <AccordionItem value={item.nrPytania}>
+                                                        <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100'>{item.pytanie}{item.odpPopr == item.odpWybr ? <Check className="text-green-500 open:rotate-0" /> : <X className="text-rose-400" />}</AccordionTrigger>
+                                                        <AccordionContent className='bg-gray-100 rounded-b-md'>
+                                                            <h1 className={`${item.odpWybr == item.odp1 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp1 ? 'bg-green-300' : null}`}`}>{item.odp1}</h1>
+                                                            <h1 className={`${item.odpWybr == item.odp2 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp2 ? 'bg-green-300' : null}`}`}>{item.odp2}</h1>
+                                                            <h1 className={`${item.odpWybr == item.odp3 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp3 ? 'bg-green-300' : null}`}`}>{item.odp3}</h1>
+                                                            <h1 className={`${item.odpWybr == item.odp4 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp4 ? 'bg-green-300' : null}`}`}>{item.odp4}</h1>
+                                                        </AccordionContent>
+                                                    </AccordionItem>
+                                                </div>
+                                            ))}
+                                        </Accordion>
+
+                                        {console.log({ active })}
+                                        <WykresBar popr={active.poprawne} all={active.all} />
+                                    </ScrollArea>
+
+                                    {/* przycisk i pod nim */}
+                                    <div className="pt-4 relative px-4">
+                                        <motion.div
+                                            layout
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]">
+                                            {typeof active.content === "function"
+                                                ? active.content()
+                                                : active.odp2}
+                                        </motion.div>
+                                    </div>
+                                </div>
                             </motion.div>
+                        </div>
+                    ) : null}
 
-                            {/* uzupełnienie tekstu */}
-                            <div>
-                                <ScrollArea className='h-[50vh] px-3'>
-                                    <Accordion type="single" collapsible>
+                </AnimatePresence>
+                <ul className="max-w-2xl mx-auto w-full gap-4">
 
-                                        {pyt && pyt.map((item) => (
-                                            <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
-                                                <AccordionItem value={item.nrPytania}>
-                                                    <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100'>{item.pytanie}{item.odpPopr == item.odpWybr ? <Check className="text-green-500 rotate-[360deg]"/> : <X className="text-rose-400"/> }</AccordionTrigger>
-                                                    <AccordionContent className='bg-gray-100 rounded-b-md'>
-                                                        <h1 className={`${item.odpWybr == item.odp1 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp1 ? 'bg-green-300' : null}`}`}>{item.odp1}</h1>
-                                                        <h1 className={`${item.odpWybr == item.odp2 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp2 ? 'bg-green-300' : null}`}`}>{item.odp2}</h1>
-                                                        <h1 className={`${item.odpWybr == item.odp3 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp3 ? 'bg-green-300' : null}`}`}>{item.odp3}</h1>
-                                                        <h1 className={`${item.odpWybr == item.odp4 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp4 ? 'bg-green-300' : null}`}`}>{item.odp4}</h1>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            </div>
-                                        ))}
-                                    </Accordion>
+                    {dane && dane.map((item, idx) => (
+                        <Card
+                            key={idx}
+                            onClick={() => { setActive(item), szukPyt(item.id) }}
+                            className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer mb-3">
+                            <div className="flex gap-4 flex-col md:flex-row ">
 
-                                    {console.log({ active })}
-                                    <WykresBar popr={active.poprawne} all={active.all} />
-                                </ScrollArea>
+                                {/* zdjecie */}
+                                <motion.div layoutId={`image-${item.id}-${id}`}>
+                                    <img
+                                        width={100}
+                                        height={100}
+                                        src={pb.files.getURL(item.expand.kategoriaID, item.expand.kategoriaID.obraz)}
+                                        alt={dane.question}
+                                        className="h-40 w-40 md:h-14 md:w-14 rounded-lg object-cover object-top" />
+                                </motion.div>
 
-                                {/* przycisk i pod nim */}
-                                <div className="pt-4 relative px-4">
-                                    <motion.div
-                                        layout
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]">
-                                        {typeof active.content === "function"
-                                            ? active.content()
-                                            : active.odp2}
-                                    </motion.div>
+                                {/* przy małym obrazku */}
+                                <div className="">
+                                    <motion.h3
+                                        layoutId={`title-${item.id}-${id}`}
+                                        className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left">
+                                        {item.expand.kategoriaID.nazwa}
+                                    </motion.h3>
+                                    <motion.p
+                                        layoutId={`description-${item.id}-${id}`}
+                                        className="text-neutral-600 dark:text-neutral-400 text-center md:text-left">
+                                        {new Date(item.updated).toLocaleDateString()}
+                                    </motion.p>
                                 </div>
                             </div>
-                        </motion.div>
-                    </div>
-                ) : null}
+                            {/* napis w małym guziku */}
+                            <button
+                                className={`px-4 py-2 text-sm rounded-full font-bold bg-gray-100 ${item.poprawne <= 6 ? `${item.poprawne <= 3 ? 'bg-red-500' : 'bg-orange-500'}` : 'bg-green-500'} hover:text-white text-black mt-4 md:mt-0`}>
+                                {item.poprawne}/{item.all}
+                            </button>
+                        </Card>
 
-            </AnimatePresence>
-            <ul className="max-w-2xl mx-auto w-full gap-4">
-
-                {dane && dane.map((item, idx) => (
-                    <div
-                        key={idx}
-                        onClick={() => { setActive(item), szukPyt(item.id) }}
-                        className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer">
-                        <div className="flex gap-4 flex-col md:flex-row ">
-
-                            {/* zdjecie */}
-                            <motion.div layoutId={`image-${item.id}-${id}`}>
-                                <img
-                                    width={100}
-                                    height={100}
-                                    src={pb.files.getURL(item.expand.kategoriaID, item.expand.kategoriaID.obraz)}
-                                    alt={dane.question}
-                                    className="h-40 w-40 md:h-14 md:w-14 rounded-lg object-cover object-top" />
-                            </motion.div>
-
-                            {/* przy małym obrazku */}
-                            <div className="">
-                                <motion.h3
-                                    layoutId={`title-${item.id}-${id}`}
-                                    className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left">
-                                    {item.expand.kategoriaID.nazwa}
-                                </motion.h3>
-                                <motion.p
-                                    layoutId={`description-${item.id}-${id}`}
-                                    className="text-neutral-600 dark:text-neutral-400 text-center md:text-left">
-                                    {item.updated}
-                                </motion.p>
-                            </div>
-                        </div>
-                        {/* napis w małym guziku */}
-                        <button
-                            // layoutId={`button-${item.id}-${id}`}
-                            className={`px-4 py-2 text-sm rounded-full font-bold bg-gray-100 ${item.poprawne <= 6 ? `${item.poprawne <= 3 ? 'hover:bg-red-500' : 'hover:bg-orange-500'}` : 'hover:bg-green-500'} hover:text-white text-black mt-4 md:mt-0`}>
-                            {item.poprawne}/{item.all}
-                        </button>
-                    </div>
-                ))}
-            </ul>
-        </ScrollArea>
+                    ))}
+                </ul>
+            </ScrollArea>
+        </>
     );
 }
 
