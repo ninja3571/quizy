@@ -14,9 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
 import { PolWykres } from "@/components/wykresQuiz";
-import { Confetti } from "@/components/magicui/confetti";
 import { ConfettiFireworks } from "@/components/confettiFireworks";
 import { ModeToggle } from "@/components/toggleTheme";
+import "@/app/style.css"
 
 export default function Home() {
 
@@ -40,6 +40,7 @@ export default function Home() {
     const [allPopr, setAllPopr] = useState(0)
     const [numb, setNumb] = useState(0)
     const [chosen, setChosen] = useState(false)
+    const [loading, setLoading] = useState(false)
 
 
     useEffect(() => {
@@ -70,6 +71,7 @@ export default function Home() {
                 json.output.answers.map((item) => (
                     item.isCorrect == true ? setPopr(item.text) : null
                 ))
+                setLoading(true)
             }
             catch (err) {
                 console.log(err)
@@ -84,6 +86,7 @@ export default function Home() {
 
     useEffect(() => {
         const next = async () => {
+            setLoading(false)
 
             if (wybr == popr) {
                 setAllPopr(allPopr + 1)
@@ -179,7 +182,7 @@ export default function Home() {
             </div>
             {nrPyt == 0 &&
                 <>
-                    <Card onClick={main} className='p-4 absolute top-[70%] translate-y-[-50%] left-[50%] translate-x-[-50%] cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 flex flex-row'>
+                    <Card onClick={main} className='p-4 absolute top-[70%] translate-y-[-50%] left-[50%] translate-x-[-50%] cursor-pointer hover:bg-gray-50 dark:hover:bg-neutral-800 flex flex-row'>
                         <LogOut /> <h1>Menu</h1>
                     </Card>
                     <div className="h-[100vh]"></div>
@@ -210,19 +213,22 @@ export default function Home() {
             }
             {nrPyt >= 1 && nrPyt <= 10 && pyt &&
                 <>
-                    <Card onClick={main} className='p-4 absolute top-[70%] translate-y-[-50%] left-[50%] translate-x-[-50%] cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 flex flex-row'>
+                    <Card onClick={main} className='p-4 absolute top-[70%] translate-y-[-50%] left-[50%] translate-x-[-50%] cursor-pointer hover:bg-gray-50 dark:hover:bg-neutral-800 flex flex-row'>
                         <LogOut /> <h1>Menu</h1>
                     </Card>
                     <div className="h-[100vh]"></div>
                     <Card className='absolute top-[50%] translate-y-[-50%] left-[50%] translate-x-[-50%] p-3 flex flex-row'>
-                        <div className="flex flex-col items-center">
-                            <h1>{pyt.output.question}</h1>
-                            <div className="flex flex-col gap-4 min-h-[100px] ">
-                                {pyt.output.answers.map((item, idx) => (
-                                    <Button key={idx} value={item.text} className={`h-auto w-auto hover:${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={(e) => { setWybr(e.target.value) }}>{item.text}</Button>
-                                ))}
+                        {loading ?
+                            <div className="flex flex-col items-center">
+                                <h1>{pyt.output.question}</h1>
+                                <div className="flex flex-col gap-4 min-h-[100px] ">
+                                    {pyt.output.answers.map((item, idx) => (
+                                        <Button key={idx} value={item.text} className='h-auto w-auto hover:bg-neutral-700 dark:hover:bg-neutral-400' onClick={(e) => { setWybr(e.target.value) }}>{item.text}</Button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                            :
+                            <div className='loader'></div>}
                     </Card>
                 </>
             }

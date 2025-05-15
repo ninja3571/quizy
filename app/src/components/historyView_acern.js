@@ -137,12 +137,12 @@ export function ExpandableCardDemo() {
                                             {pyt && pyt.map((item) => (
                                                 <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
                                                     <AccordionItem value={item.nrPytania}>
-                                                        <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100'>{item.pytanie}{item.odpPopr == item.odpWybr ? <Check className="text-green-500 open:rotate-0" /> : <X className="text-rose-400" />}</AccordionTrigger>
-                                                        <AccordionContent className='bg-gray-100 rounded-b-md'>
-                                                            <h1 className={`${item.odpWybr == item.odp1 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp1 ? 'bg-green-300' : null}`}`}>{item.odp1}</h1>
-                                                            <h1 className={`${item.odpWybr == item.odp2 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp2 ? 'bg-green-300' : null}`}`}>{item.odp2}</h1>
-                                                            <h1 className={`${item.odpWybr == item.odp3 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp3 ? 'bg-green-300' : null}`}`}>{item.odp3}</h1>
-                                                            <h1 className={`${item.odpWybr == item.odp4 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp4 ? 'bg-green-300' : null}`}`}>{item.odp4}</h1>
+                                                        <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100 dark:hover:bg-neutral-700 dark:aria-expanded:bg-neutral-800'>{item.pytanie}{item.odpPopr == item.odpWybr ? <Check className="text-green-500 open:rotate-0" /> : <X className="text-rose-400" />}</AccordionTrigger>
+                                                        <AccordionContent className='bg-gray-100 dark:bg-neutral-700 rounded-b-md'>
+                                                            <h1 className={`${item.odpWybr == item.odp1 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400 dark:bg-green-700' : "bg-rose-400 dark:bg-rose-800"}` : `${item.odpPopr == item.odp1 ? 'bg-green-300 dark:bg-green-800' : null}`}`}>{item.odp1}</h1>
+                                                            <h1 className={`${item.odpWybr == item.odp2 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400 dark:bg-green-700' : "bg-rose-400 dark:bg-rose-800"}` : `${item.odpPopr == item.odp2 ? 'bg-green-300 dark:bg-green-800' : null}`}`}>{item.odp2}</h1>
+                                                            <h1 className={`${item.odpWybr == item.odp3 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400 dark:bg-green-700' : "bg-rose-400 dark:bg-rose-800"}` : `${item.odpPopr == item.odp3 ? 'bg-green-300 dark:bg-green-800' : null}`}`}>{item.odp3}</h1>
+                                                            <h1 className={`${item.odpWybr == item.odp4 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400 dark:bg-green-700' : "bg-rose-400 dark:bg-rose-800"}` : `${item.odpPopr == item.odp4 ? 'bg-green-300 dark:bg-green-800' : null}`}`}>{item.odp4}</h1>
                                                         </AccordionContent>
                                                     </AccordionItem>
                                                 </div>
@@ -169,7 +169,8 @@ export function ExpandableCardDemo() {
                                 </div>
                             </motion.div>
                         </div>
-                    ) : null}
+                    ) :
+                        <h1>brak danych</h1>}
 
                 </AnimatePresence>
                 <ul className="max-w-2xl mx-auto w-full gap-4">
@@ -208,12 +209,16 @@ export function ExpandableCardDemo() {
                             </div>
                             {/* napis w małym guziku */}
                             <button
-                                className={`px-4 py-2 text-sm rounded-full font-bold bg-gray-100 ${item.poprawne <= 6 ? `${item.poprawne <= 3 ? 'bg-red-500' : 'bg-orange-500'}` : 'bg-green-500'} hover:text-white text-black mt-4 md:mt-0`}>
+                                className={`px-4 py-2 text-sm rounded-full font-bold bg-gray-100 ${item.poprawne <= 6 ? `${item.poprawne <= 3 ? 'bg-red-500' : 'bg-orange-500'}` : `${item.poprawne < 10 ? 'bg-green-500' : 'bg-purple-500'}`} hover:text-white text-black mt-4 md:mt-0`}>
                                 {item.poprawne}/{item.all}
                             </button>
                         </Card>
 
                     ))}
+                    {!dane ?
+                        <h1>brak danych</h1>
+                        : null
+                    }
                 </ul>
             </ScrollArea>
         </>
