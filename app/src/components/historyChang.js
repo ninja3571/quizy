@@ -14,11 +14,11 @@ import {
 import PocketBase from 'pocketbase';
 import { ScrollArea } from "./ui/scroll-area";
 import { WykresBar } from "./wykresBar";
-import { Check, X } from "lucide-react";
+import { ArrowBigRightDash, Check, X } from "lucide-react";
 import { Card } from "./ui/card";
-import Filter from "@/components/filter";
+import Link from "next/link";
 
-export function ExpandableCardDemo() {
+export function FastHistory({ danen }) {
     const [active, setActive] = useState(null);
     const ref = useRef(null);
     const id = useId();
@@ -29,18 +29,9 @@ export function ExpandableCardDemo() {
     const pb = new PocketBase('http://192.168.60.25:8080');
 
     useEffect(() => {
-        const getData = async () => {
-            try {
-                const records = await pb.collection('sesions').getFullList({ expand: 'kategoriaID', sort: '-created' });
-                console.log(records)
-                setDane(records)
-            }
-            catch (err) {
-                console.log(err)
-            }
 
-        }
-        getData()
+        setDane(danen.items)
+
     }, [])
 
     const szukPyt = async (id) => {
@@ -77,9 +68,8 @@ export function ExpandableCardDemo() {
 
     return (
         <>
-            <Filter danen={setDane} />
 
-            <ScrollArea className='h-[calc(80vh-16px)] w-[calc(100%-62px)] pt-2'>
+            <ScrollArea className='h-auto w-[200%] pt-2'>
                 <AnimatePresence>
                     {active && typeof active === "object" && (
                         <motion.div
@@ -89,12 +79,12 @@ export function ExpandableCardDemo() {
                             className="fixed inset-0 bg-black/20 h-full w-full z-10" />
                     )}
                 </AnimatePresence>
-                <AnimatePresence>
+                <AnimatePresence className='w-full h-screen'>
 
                     {dane && active && typeof active === "object" ? (
 
                         // po kliknięciu
-                        <div className="fixed inset-0 grid place-items-center z-[100]">
+                        <div className="fixed inset-0 grid place-items-center z-[100] w-[200%]">
                             <motion.button
                                 key={`button-${active.title}-${dane.id}`}
                                 layout
@@ -122,31 +112,22 @@ export function ExpandableCardDemo() {
                                 className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden">
                                 <motion.div layoutId={`image-${active.pytanie}-${id}`}>
                                     <img
-                                        width={200}
-                                        height={200}
+                                        width={100}
+                                        height={100}
                                         src={pb.files.getURL(active.expand.kategoriaID, active.expand.kategoriaID.obraz)}
                                         alt={active.pytanie}
-                                        className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain object-top" />
+                                        className="w-full h-auto lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain object-bottom" />
                                 </motion.div>
 
                                 {/* uzupełnienie tekstu */}
                                 <div>
-                                    <ScrollArea className='h-[50vh] px-3'>
+                                    <ScrollArea className='h-[20vh] px-3'>
                                         <Accordion type="single" collapsible>
 
                                             {pyt && pyt.map((item) => (
                                                 <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
                                                     <AccordionItem value={item.nrPytania}>
-                                                        <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100 dark:hover:bg-neutral-700 dark:aria-expanded:bg-neutral-800'>
-                                                            {item.pytanie}
-                                                            <span className="!transform-none !transition-none"> {/* <- This blocks rotation */}
-                                                                {item.odpPopr === item.odpWybr ? (
-                                                                    <Check className="text-green-500" />
-                                                                ) : (
-                                                                    <X className="text-rose-400" />
-                                                                )}
-                                                            </span>
-                                                        </AccordionTrigger>
+                                                        <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100 dark:hover:bg-neutral-700 dark:aria-expanded:bg-neutral-800'>{item.pytanie}{item.odpPopr == item.odpWybr ? <Check className="text-green-500 open:rotate-0" /> : <X className="text-rose-400" />}</AccordionTrigger>
                                                         <AccordionContent className='bg-gray-100 dark:bg-neutral-700 rounded-b-md'>
                                                             <h1 className={`${item.odpWybr == item.odp1 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400 dark:bg-green-700' : "bg-rose-400 dark:bg-rose-800"}` : `${item.odpPopr == item.odp1 ? 'bg-green-300 dark:bg-green-800' : null}`}`}>{item.odp1}</h1>
                                                             <h1 className={`${item.odpWybr == item.odp2 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400 dark:bg-green-700' : "bg-rose-400 dark:bg-rose-800"}` : `${item.odpPopr == item.odp2 ? 'bg-green-300 dark:bg-green-800' : null}`}`}>{item.odp2}</h1>
@@ -179,7 +160,7 @@ export function ExpandableCardDemo() {
                             </motion.div>
                         </div>
                     ) :
-                        null}
+                        <Link href="/history" className="flex flex-row gap-3 hover:bg-neutral-100 dark:hover:bg-neutral-700 w-[250px] rounded-t-md rounded-bl-md border-2">Przejdź do historii <ArrowBigRightDash /></Link>}
 
                 </AnimatePresence>
                 <ul className="max-w-2xl mx-auto w-full gap-4">
