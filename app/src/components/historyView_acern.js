@@ -14,6 +14,7 @@ import {
 import PocketBase from 'pocketbase';
 import { ScrollArea } from "./ui/scroll-area";
 import { WykresBar } from "./wykresBar";
+import { Check, X } from "lucide-react";
 
 export function ExpandableCardDemo() {
     const [active, setActive] = useState(null);
@@ -21,10 +22,9 @@ export function ExpandableCardDemo() {
     const id = useId();
     const [dane, setDane] = useState(null)
     const [pyt, setPyt] = useState(null)
-    const [all, setAll] = useState(null)
 
-    // const pb = new PocketBase('http://172.16.15.146:8080');
-    const pb = new PocketBase('http://192.168.60.25:8080');
+    const pb = new PocketBase('http://172.16.15.146:8080');
+    // const pb = new PocketBase('http://192.168.60.25:8080');
 
     useEffect(() => {
         const getData = async () => {
@@ -47,7 +47,6 @@ export function ExpandableCardDemo() {
                 filter: `numerSesji = '${id}'`,
             });
             setPyt(records)
-            setAll(records.length)
             console.log(records)
         }
         catch (err) {
@@ -133,7 +132,7 @@ export function ExpandableCardDemo() {
                                         {pyt && pyt.map((item) => (
                                             <div key={item.nrPytania} className={`order-[${item.nrPytania}]`}>
                                                 <AccordionItem value={item.nrPytania}>
-                                                    <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100'>{item.pytanie}</AccordionTrigger>
+                                                    <AccordionTrigger className='aria-expanded:bg-gray-200 rounded-b-none hover:bg-gray-100'>{item.pytanie}{item.odpPopr == item.odpWybr ? <Check className="text-green-500 rotate-[360deg]"/> : <X className="text-rose-400"/> }</AccordionTrigger>
                                                     <AccordionContent className='bg-gray-100 rounded-b-md'>
                                                         <h1 className={`${item.odpWybr == item.odp1 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp1 ? 'bg-green-300' : null}`}`}>{item.odp1}</h1>
                                                         <h1 className={`${item.odpWybr == item.odp2 ? `${item.odpPopr == item.odpWybr ? 'bg-green-400' : "bg-rose-400"}` : `${item.odpPopr == item.odp2 ? 'bg-green-300' : null}`}`}>{item.odp2}</h1>
@@ -146,7 +145,7 @@ export function ExpandableCardDemo() {
                                     </Accordion>
 
                                     {console.log({ active })}
-                                    <WykresBar popr={active.poprawne} all={all} />
+                                    <WykresBar popr={active.poprawne} all={active.all} />
                                 </ScrollArea>
 
                                 {/* przycisk i pod nim */}
@@ -202,11 +201,11 @@ export function ExpandableCardDemo() {
                             </div>
                         </div>
                         {/* napis w małym guziku */}
-                        <motion.button
-                            layoutId={`button-${item.id}-${id}`}
+                        <button
+                            // layoutId={`button-${item.id}-${id}`}
                             className={`px-4 py-2 text-sm rounded-full font-bold bg-gray-100 ${item.poprawne <= 6 ? `${item.poprawne <= 3 ? 'hover:bg-red-500' : 'hover:bg-orange-500'}` : 'hover:bg-green-500'} hover:text-white text-black mt-4 md:mt-0`}>
-                            {item.poprawne}/{all}
-                        </motion.button>
+                            {item.poprawne}/{item.all}
+                        </button>
                     </div>
                 ))}
             </ul>

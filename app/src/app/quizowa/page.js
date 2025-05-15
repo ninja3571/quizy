@@ -11,11 +11,12 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function Home() {
 
-    // const pb = new PocketBase('http://172.16.15.146:8080');
-    const pb = new PocketBase('http://192.168.60.25:8080');
+    const pb = new PocketBase('http://172.16.15.146:8080');
+    // const pb = new PocketBase('http://192.168.60.25:8080');
     const router = useRouter()
 
     if (pb.authStore.model) {
@@ -31,6 +32,8 @@ export default function Home() {
     const [idKat, setIdKat] = useState(null)
     const [wybr, setWybr] = useState(null)
     const [popr, setPopr] = useState(null)
+    const [allPopr, setAllPopr] = useState(0)
+    const [numb, setNumb] = useState(0)
 
 
     useEffect(() => {
@@ -51,8 +54,8 @@ export default function Home() {
     useEffect(() => {
         const getData = async () => {
             try {
-                // const data = await fetch(`http://172.16.15.146:5678/webhook/quiz`, { headers: { "topic": temat } })
-                const data = await fetch(`http://192.168.60.25:5678/webhook/quiz`, { headers: { "topic": temat } })
+                const data = await fetch(`http://172.16.15.146:5678/webhook/quiz`, { headers: { "topic": temat } })
+                // const data = await fetch(`http://192.168.60.25:5678/webhook/quiz`, { headers: { "topic": temat } })
                 const json = await data.json()
                 console.log(json)
                 setPyt(json)
@@ -71,24 +74,41 @@ export default function Home() {
         // }, 200);
     }, [nrPyt])
 
-    const next = async () => {
-        const data = {
-            "pytanie": `${pyt.output.question}`,
-            "odp1": `${pyt.output.answers[0].text}`,
-            "odp2": `${pyt.output.answers[1].text}`,
-            "odp3": `${pyt.output.answers[2].text}`,
-            "odp4": `${pyt.output.answers[3].text}`,
-            "odpPopr": `${await popr}`,
-            "odpWybr": `${pyt.output.answers[wybr].text}`,
-            "numerSesji": sesja,
-            "nrPytania": nrPyt
-        };
 
-        const record = await pb.collection('questions').create(data);
-        console.log(record)
+    useEffect(() => {
+        const next = async() => {
 
-        setNrPyt(nrPyt + 1)
-    }
+            if(wybr==popr){
+                setAllPopr(allPopr+1)
+            }
+
+            if(wybr != null){
+                            const data = {
+                "pytanie": `${pyt.output.question}`,
+                "odp1": `${pyt.output.answers[0].text}`,
+                "odp2": `${pyt.output.answers[1].text}`,
+                "odp3": `${pyt.output.answers[2].text}`,
+                "odp4": `${pyt.output.answers[3].text ? pyt.output.answers[3].text : ''}`,
+                "odpPopr": `${popr}`,
+                "odpWybr": `${wybr}`,
+                "numerSesji": sesja,
+                "nrPytania": nrPyt
+            };
+    
+            const record = await pb.collection('questions').create(data);
+            console.log(record)
+    
+            const daten = {
+                "poprawne": allPopr,
+                "all": nrPyt
+            };
+            
+            const recorden = await pb.collection('sesions').update(sesja, daten);
+            setNrPyt(nrPyt + 1)
+            }
+        }
+        next()
+    }, [wybr])
 
     const sesion = async () => {
         setPyt(null)
@@ -99,10 +119,19 @@ export default function Home() {
 
         const record = await pb.collection('sesions').create(data);
         setSesja(record.id)
+        setAllPopr(0)
         setNrPyt(nrPyt + 1)
     }
 
     const again = async () => {
+        const daten = {
+            "poprawne": allPopr,
+            "all": nrPyt
+        };
+            
+        const recorden = await pb.collection('sesions').update(sesja, daten);
+
+        setAllPopr(0)
         setPyt(null)
         setSesja(null)
         const data = {
@@ -116,10 +145,20 @@ export default function Home() {
     }
 
     const reset = async () => {
+        const daten = {
+            "poprawne": allPopr,
+        };
+            
+        const recorden = await pb.collection('sesions').update(sesja, daten);
         setNrPyt(0)
     }
 
     const main = async () => {
+        const daten = {
+            "poprawne": allPopr,
+        };
+            
+        const recorden = await pb.collection('sesions').update(sesja, daten);
         router.push("/")
     }
 
@@ -129,13 +168,22 @@ export default function Home() {
                 <>
                     <div className="h-[100vh]"></div>
                     <div className="absolute top-[50%] left-[50%] translate-x-[-50%] p-4 border-2 border-dashed">
-                        <Select onValueChange={(e) => { setTemat(e.nazwa), setIdKat(e.id), console.log(e) }}>
+                        {idKat &&
+                            <img
+                                src={pb.files.getURL(categories[numb], categories[numb].obraz)}
+                                width={300}
+                                height={300}
+                                alt="wololo"
+                                className="absolute top-[50%] translate-y-[calc(-100%-60px)] left-[50%] translate-x-[-50%] bg-gray-100"
+                            />
+                        } 
+                        <Select onValueChange={(e) => { setTemat(e.nazwa), setIdKat(e.id), console.log(e), setNumb(e.num) }}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Temat quizu" />
                             </SelectTrigger>
                             <SelectContent>
                                 {categories && categories.map((item, idx) => (
-                                    <SelectItem key={idx} value={{ id: item.id, nazwa: item.skrot }}>{item.skrot}</SelectItem>
+                                    <SelectItem key={idx} value={{ id:item.id, nazwa:item.skrot, num:idx }}>{item.skrot}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -148,7 +196,7 @@ export default function Home() {
                     <h1>{pyt.output.question}</h1>
                     <div className="flex flex-col gap-4 min-h-[100px] ">
                         {pyt.output.answers.map((item, idx) => (
-                            <Button key={idx} className={`h-auto w-auto ${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={next}>{item.text}</Button>
+                            <Button key={idx} value={item.text} className={`h-auto w-auto hover:${item.isCorrect == true ? "bg-lime-500" : "bg-rose-500"}`} onClick={(e)=>{setWybr(e.target.value)}}>{item.text}</Button>
                         ))}
                     </div>
                 </div>
