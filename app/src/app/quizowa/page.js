@@ -20,8 +20,8 @@ import "@/app/style.css"
 
 export default function Home() {
 
-    // const pb = new PocketBase('http://172.16.15.146:8080');
-    const pb = new PocketBase('http://192.168.60.25:8080');
+    const pb = new PocketBase('http://172.16.15.146:8080');
+    // const pb = new PocketBase('http://192.168.60.25:8080');
     const router = useRouter()
 
     if (pb.authStore.model) {
@@ -62,8 +62,8 @@ export default function Home() {
         const getData = async () => {
             // setPyt(null)
             try {
-                // const data = await fetch(`http://172.16.15.146:5678/webhook/quiz`, { headers: { "topic": temat } })
-                const data = await fetch(`http://192.168.60.25:5678/webhook/quiz`, { headers: { "topic": temat } })
+                const data = await fetch(`http://172.16.15.146:5678/webhook/quiz`, { headers: { "topic": temat } })
+                // const data = await fetch(`http://192.168.60.25:5678/webhook/quiz`, { headers: { "topic": temat } })
                 const json = await data.json()
                 console.log(json)
                 setPyt(json)

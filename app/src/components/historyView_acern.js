@@ -17,6 +17,7 @@ import { WykresBar } from "./wykresBar";
 import { Check, X } from "lucide-react";
 import { Card } from "./ui/card";
 import Filter from "@/components/filter";
+import "@/app/style.css"
 
 export function ExpandableCardDemo() {
     const [active, setActive] = useState(null);
@@ -25,8 +26,8 @@ export function ExpandableCardDemo() {
     const [dane, setDane] = useState(null)
     const [pyt, setPyt] = useState(null)
 
-    // const pb = new PocketBase('http://172.16.15.146:8080');
-    const pb = new PocketBase('http://192.168.60.25:8080');
+    const pb = new PocketBase('http://172.16.15.146:8080');
+    // const pb = new PocketBase('http://192.168.60.25:8080');
 
     useEffect(() => {
         const getData = async () => {
@@ -225,7 +226,7 @@ export function ExpandableCardDemo() {
 
                     ))}
                     {!dane ?
-                        <h1>brak danych</h1>
+                        <div className='loader absolute top-[50%] left-[50%]'></div>
                         : null
                     }
                 </ul>

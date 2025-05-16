@@ -3,9 +3,14 @@ import PocketBase from "pocketbase";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 // Initialize PocketBase
-const pb = new PocketBase("http://192.168.60.25:8080"); // adjust URL as needed
+    const pb = new PocketBase('http://172.16.15.146:8080');
+// const pb = new PocketBase("http://192.168.60.25:8080");
+       
+    pb.autoCancellation(false)
+
 
 export default function Filter({ danen, id }) {
+
     const [records, setRecords] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
