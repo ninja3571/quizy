@@ -186,9 +186,10 @@ export default function Home() {
                         <LogOut /> <h1>Menu</h1>
                     </Card>
                     <div className="h-[100vh]"></div>
+                    
                     <Card className="absolute top-[50%] left-[50%] translate-x-[-50%] p-4 border-2 border-dashed">
 
-                        {idKat &&
+                        {idKat && categories[numb].obraz && 
                             <img
                                 src={pb.files.getURL(categories[numb], categories[numb].obraz)}
                                 width={300}
@@ -207,8 +208,9 @@ export default function Home() {
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Button disabled={chosen ? false : true} className='w-[100%] mt-2' onClick={sesion}>Graj</Button>
+                        <Button disabled={chosen ? false : true} className='w-[100%] mt-2 cursor-pointer' onClick={sesion}>Graj</Button>
                     </Card>
+                    {loading ? <div className='loader'></div> : null}
                 </>
             }
             {nrPyt >= 1 && nrPyt <= 10 && pyt &&
@@ -219,12 +221,13 @@ export default function Home() {
                     <div className="h-[100vh]"></div>
                     <Card className='absolute top-[50%] translate-y-[-50%] left-[50%] translate-x-[-50%] p-3 flex flex-row'>
                         {loading ?
-                            <div className="flex flex-col items-center">
+                            <div className="relative flex flex-col items-center pt-7">
                                 <h1>{pyt.output.question}</h1>
                                 <div className="flex flex-col gap-4 min-h-[100px] ">
                                     {pyt.output.answers.map((item, idx) => (
-                                        <Button key={idx} value={item.text} className='h-auto w-auto hover:bg-neutral-700 dark:hover:bg-neutral-400' onClick={(e) => { setWybr(e.target.value) }}>{item.text}</Button>
+                                        <Button key={idx} value={item.text} className='h-auto w-auto hover:bg-neutral-700 dark:hover:bg-neutral-400 cursor-pointer' onClick={(e) => { setWybr(e.target.value) }}>{item.text}</Button>
                                     ))}
+                                    <p className="absolute top-0 left-0">{nrPyt}/10</p>
                                 </div>
                             </div>
                             :

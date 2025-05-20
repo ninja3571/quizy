@@ -120,14 +120,19 @@ export function ExpandableCardDemo() {
                             <motion.div
                                 layoutId={`card-${active.pytanie}-${dane.id}`}
                                 ref={ref}
-                                className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden">
+                                className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden">
                                 <motion.div layoutId={`image-${active.pytanie}-${id}`}>
+                                    { active.expand.kategoriaID.obraz ?
                                     <img
                                         width={200}
                                         height={200}
                                         src={pb.files.getURL(active.expand.kategoriaID, active.expand.kategoriaID.obraz)}
                                         alt={active.pytanie}
-                                        className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain object-top" />
+                                        className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain object-top dark:bg-gray-800 bg-gray-300" />
+                                        :
+                                    <div className="w-full flex justify-center items-center scale-200 my-4">
+                                        <h1>{active.expand.kategoriaID.nazwa}</h1>    
+                                    </div>}
                                 </motion.div>
 
                                 {/* uzupełnienie tekstu */}
@@ -193,7 +198,7 @@ export function ExpandableCardDemo() {
                             <div className="flex gap-4 flex-col md:flex-row ">
 
                                 {/* zdjecie */}
-                                {item.expand && item.expand.kategoriaID &&
+                                {item.expand && item.expand.kategoriaID.obraz &&
                                     <motion.div layoutId={`image-${item.id}-${id}`}>
                                         <img
                                             width={100}
@@ -229,6 +234,7 @@ export function ExpandableCardDemo() {
                         <div className='loader absolute top-[50%] left-[50%]'></div>
                         : null
                     }
+                    {dane && dane.length==0 ? <h1 className="absolute top-[50%] translate-y-[-50%] left-[50%] translate-x-[-50%] scale-[300%]">Brak wyników</h1> : null}
                 </ul>
             </ScrollArea>
         </>

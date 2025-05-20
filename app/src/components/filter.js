@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PocketBase from "pocketbase";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { ScrollArea } from "./ui/scroll-area";
 
 // Initialize PocketBase
     const pb = new PocketBase('http://172.16.15.146:8080');
@@ -108,16 +109,20 @@ export default function Filter({ danen, id }) {
                 {/* Category Checkboxes */}
                 <div className="mb-4 border-r-2 pr-2">
                     <strong>Categories:</strong>
+                    <ScrollArea className='h-[80px]'>
                     {categories.map((cat) => (
-                        <label key={cat.id} className="block">
+
+                        <label key={cat.id} className="block cursor-pointer">
                             <input
                                 type="checkbox"
                                 checked={selectedCategories.includes(cat.id)}
                                 onChange={() => toggleCategory(cat.id)}
-                            />
+                                className="cursor-pointer"
+                                />
                             {cat.skrot}
                         </label>
                     ))}
+                    </ScrollArea>
                 </div>
 
                 {/* Number Filters */}

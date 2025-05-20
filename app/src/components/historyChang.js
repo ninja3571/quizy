@@ -85,7 +85,7 @@ export function FastHistory({ danen }) {
                     {dane && active && typeof active === "object" ? (
 
                         // po kliknięciu
-                        <div className="fixed inset-0 grid place-items-center z-[100] w-[200%]">
+                        <div className="fixed inset-0 grid place-items-center z-[100] w-[300%] overflow-auto">
                             <motion.button
                                 key={`button-${active.title}-${dane.id}`}
                                 layout
@@ -112,12 +112,17 @@ export function FastHistory({ danen }) {
                                 ref={ref}
                                 className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden">
                                 <motion.div layoutId={`image-${active.pytanie}-${id}`}>
+                                    {active.expand.kategoriaID.obraz ? 
                                     <img
                                         width={100}
                                         height={100}
                                         src={pb.files.getURL(active.expand.kategoriaID, active.expand.kategoriaID.obraz)}
                                         alt={active.pytanie}
                                         className="w-full h-auto lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain object-bottom" />
+                                    :
+                                    <div  className="w-full flex justify-center items-center scale-200 my-4">
+                                        <h1>{active.expand.kategoriaID.nazwa}</h1>    
+                                    </div>}
                                 </motion.div>
 
                                 {/* uzupełnienie tekstu */}
@@ -174,7 +179,7 @@ export function FastHistory({ danen }) {
                             <div className="flex gap-4 flex-col md:flex-row ">
 
                                 {/* zdjecie */}
-                                {item.expand && item.expand.kategoriaID &&
+                                {item.expand && item.expand.kategoriaID && item.expand.kategoriaID.obraz &&
                                     <motion.div layoutId={`image-${item.id}-${id}`}>
                                         <img
                                             width={100}
