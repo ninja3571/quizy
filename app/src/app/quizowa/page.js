@@ -65,22 +65,25 @@ export default function Home() {
                 const data = await fetch(`http://172.16.15.146:5678/webhook/quiz`, { headers: { "topic": temat } })
                 // const data = await fetch(`http://192.168.60.25:5678/webhook/quiz`, { headers: { "topic": temat } })
                 const json = await data.json()
+
                 console.log(json)
                 setPyt(json)
 
-                json.output.answers.map((item) => (
+                if(Object.keys(json).length === 0 && json.constructor  === Object){
+                    console.log("retrying")
+                    return getData()
+                }
+
+                json && json.output.answers.map((item) => (
                     item.isCorrect == true ? setPopr(item.text) : null
                 ))
                 setLoading(true)
             }
             catch (err) {
                 console.log(err)
-                // setChange(err)
             }
         }
-        // setTimeout(() => {
         getData()
-        // }, 200);
     }, [nrPyt])
 
 
@@ -210,7 +213,6 @@ export default function Home() {
                         </Select>
                         <Button disabled={chosen ? false : true} className='w-[100%] mt-2 cursor-pointer' onClick={sesion}>Graj</Button>
                     </Card>
-                    {loading ? <div className='loader'></div> : null}
                 </>
             }
             {nrPyt >= 1 && nrPyt <= 10 && pyt &&
