@@ -38,7 +38,7 @@ export function FastHistory({ danen }) {
     const szukPyt = async (id) => {
         try {
             const records = await pb.collection('questions').getFullList({
-                filter: `numerSesji = '${id}'`,
+                filter: `numerSesji = '${id}', pb.authStore.model.id`,
             });
             setPyt(records)
             console.log(records)

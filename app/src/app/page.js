@@ -26,7 +26,7 @@ export default function Home() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const records = await pb.collection('sesions').getList(1, 5, { sort: '-created', expand: 'kategoriaID' });
+        const records = await pb.collection('sesions').getList(1, 5, { sort: '-created', expand: 'kategoriaID', filter: `userID= '${pb.authStore.model.id}'`});
         console.log(records)
         setDane(records)
 
@@ -51,7 +51,7 @@ export default function Home() {
           <div className="absolute left-[50%] translate-x-[-50%]">
             <WykresGradLin className="h-1/2 w-full -z-10" dane={dane} catego={kat} />
           </div>
-          <div className="absolute bottom-1 left-[25%] translate-x-[-50%]">
+          <div className="absolute top-[42.5%] left-[25%] translate-x-[-50%]">
             <FastHistory danen={dane} />
           </div>
         </>

@@ -64,6 +64,7 @@ export default function Home() {
     if (name != null && email != null && pass != null && pass == pass2) {
       console.log(data)
       const record = await pb.collection('users').create(data);
+      logIn()
     }
 
     else {

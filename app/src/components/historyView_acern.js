@@ -32,7 +32,7 @@ export function ExpandableCardDemo() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const records = await pb.collection('sesions').getFullList({ expand: 'kategoriaID', sort: '-created' });
+                const records = await pb.collection('sesions').getFullList({ expand: 'kategoriaID', sort: '-created', filter: `userID= '${pb.authStore.model.id}'` });
                 console.log(records)
                 setDane(records)
             }
